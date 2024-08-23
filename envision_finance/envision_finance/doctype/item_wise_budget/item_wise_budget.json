@@ -1,0 +1,180 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-08-23 12:19:19.931193",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_lyvb",
+  "company",
+  "department",
+  "column_break_yukv",
+  "project",
+  "quotation",
+  "disable",
+  "control_action_section",
+  "applicable_on_material_request",
+  "action_if_annual_budget_exceeded_on_mr",
+  "column_break_mknp",
+  "applicable_on_purchase_order",
+  "action_if_annual_budget_exceeded_on_po",
+  "column_break_ohik",
+  "applicable_on_purchase_invoice",
+  "action_if_annual_budget_exceeded_on_pi",
+  "section_break_ytbv",
+  "budgeted_items",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_lyvb",
+   "fieldtype": "Section Break",
+   "label": "Details"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "department",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Department",
+   "options": "Department",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_yukv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Project",
+   "options": "Project",
+   "reqd": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "disable",
+   "fieldtype": "Check",
+   "label": "Disable"
+  },
+  {
+   "fieldname": "quotation",
+   "fieldtype": "Link",
+   "label": "Quotation",
+   "options": "Quotation"
+  },
+  {
+   "fieldname": "control_action_section",
+   "fieldtype": "Section Break",
+   "label": "Control Action"
+  },
+  {
+   "default": "0",
+   "fieldname": "applicable_on_material_request",
+   "fieldtype": "Check",
+   "label": "Applicable on Material Request"
+  },
+  {
+   "default": "Warn",
+   "depends_on": "eval:doc.applicable_on_material_request",
+   "fieldname": "action_if_annual_budget_exceeded_on_mr",
+   "fieldtype": "Select",
+   "label": "Action if Annual Budget Exceeded on Material Request",
+   "mandatory_depends_on": "eval:doc.applicable_on_material_request",
+   "options": "Stop\nWarn"
+  },
+  {
+   "fieldname": "column_break_mknp",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "applicable_on_purchase_order",
+   "fieldtype": "Check",
+   "label": "Applicable on Purchase Order"
+  },
+  {
+   "default": "Warn",
+   "depends_on": "eval: doc.applicable_on_purchase_order",
+   "fieldname": "action_if_annual_budget_exceeded_on_po",
+   "fieldtype": "Select",
+   "label": "Action if Annual Budget Exceeded on Purchase Order",
+   "mandatory_depends_on": "eval: doc.applicable_on_purchase_order",
+   "options": "Stop\nWarn"
+  },
+  {
+   "fieldname": "column_break_ohik",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "applicable_on_purchase_invoice",
+   "fieldtype": "Check",
+   "label": "Applicable on Purchase Invoice"
+  },
+  {
+   "default": "Warn",
+   "depends_on": "eval:doc.applicable_on_purchase_invoice",
+   "fieldname": "action_if_annual_budget_exceeded_on_pi",
+   "fieldtype": "Select",
+   "label": "Action if Annual Budget Exceeded on Purchase Invoice",
+   "mandatory_depends_on": "eval:doc.applicable_on_purchase_invoice",
+   "options": "Stop\nWarn"
+  },
+  {
+   "fieldname": "section_break_ytbv",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "budgeted_items",
+   "fieldtype": "Table",
+   "label": "Budgeted Items",
+   "options": "Budget Items",
+   "reqd": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Item wise Budget",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2024-08-23 12:37:45.056895",
+ "modified_by": "Administrator",
+ "module": "Envision Finance",
+ "name": "Item wise Budget",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

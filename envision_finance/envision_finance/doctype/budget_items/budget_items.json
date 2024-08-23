@@ -1,0 +1,109 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-08-23 12:19:56.283376",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "details_section",
+  "item",
+  "item_group",
+  "column_break_tnwv",
+  "uom",
+  "hsn__sac_code",
+  "budget_details_section",
+  "quantity",
+  "unit_price",
+  "column_break_duoz",
+  "amount",
+  "current_budget"
+ ],
+ "fields": [
+  {
+   "fieldname": "details_section",
+   "fieldtype": "Section Break",
+   "label": "Details"
+  },
+  {
+   "fieldname": "item",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Item",
+   "options": "Item",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "item.item_group",
+   "fieldname": "item_group",
+   "fieldtype": "Data",
+   "label": "Item Group",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_tnwv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "item.stock_uom",
+   "fieldname": "uom",
+   "fieldtype": "Data",
+   "label": "UOM",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "item.gst_hsn_code",
+   "fieldname": "hsn__sac_code",
+   "fieldtype": "Data",
+   "label": "HSN / SAC Code",
+   "read_only": 1
+  },
+  {
+   "fieldname": "budget_details_section",
+   "fieldtype": "Section Break",
+   "label": "Budget Details"
+  },
+  {
+   "fieldname": "quantity",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Quantity",
+   "reqd": 1
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Amount"
+  },
+  {
+   "fieldname": "column_break_duoz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "unit_price",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Unit Price",
+   "reqd": 1
+  },
+  {
+   "fieldname": "current_budget",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Current Budget"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-08-23 12:39:35.132749",
+ "modified_by": "Administrator",
+ "module": "Envision Finance",
+ "name": "Budget Items",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
