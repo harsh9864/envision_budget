@@ -1,2 +1,7 @@
-# envision_finance
-Repository for developing and maintaining the Finance for Envision Enviro Tech
+## Envision Finance
+
+An app for development of Accounting and Budget Modules for Envision Enviro Tech
+
+#### License
+
+mit
