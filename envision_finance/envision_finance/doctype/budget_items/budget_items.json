@@ -15,8 +15,9 @@
   "budget_details_section",
   "quantity",
   "unit_price",
-  "column_break_duoz",
   "amount",
+  "column_break_duoz",
+  "remaining_quantity",
   "current_budget"
  ],
  "fields": [
@@ -67,14 +68,14 @@
    "fieldname": "quantity",
    "fieldtype": "Float",
    "in_list_view": 1,
-   "label": "Quantity",
+   "label": "Total Quantity",
    "reqd": 1
   },
   {
    "fieldname": "amount",
    "fieldtype": "Currency",
    "in_list_view": 1,
-   "label": "Amount"
+   "label": "Total Budget"
   },
   {
    "fieldname": "column_break_duoz",
@@ -91,13 +92,18 @@
    "fieldname": "current_budget",
    "fieldtype": "Currency",
    "in_list_view": 1,
-   "label": "Current Budget"
+   "label": "Remaining Budget"
+  },
+  {
+   "fieldname": "remaining_quantity",
+   "fieldtype": "Float",
+   "label": "Remaining Quantity"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-08-23 12:39:35.132749",
+ "modified": "2024-08-28 18:56:56.749191",
  "modified_by": "Administrator",
  "module": "Envision Finance",
  "name": "Budget Items",
