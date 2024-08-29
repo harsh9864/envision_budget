@@ -190,10 +190,8 @@ class PurchaseOrder(BuyingController):
 
     def validate(self):
         super().validate()
-        self.validate_item_wise_budget()
 
         self.set_status()
-        # self.validate_item_wise_budget()
         # apply tax withholding only if checked and applicable
         self.set_tax_withholding()
 
@@ -462,7 +460,7 @@ class PurchaseOrder(BuyingController):
     def on_submit(self):
         
         super().on_submit()
-
+        self.validate_item_wise_budget()
         if self.is_against_so():
             self.update_status_updater()
 

@@ -261,7 +261,6 @@ class PurchaseInvoice(BuyingController):
             self.is_opening = "No"
 
         self.validate_posting_time()
-        self.validate_item_wise_budget()
         super().validate()
         if not self.is_return:
             self.po_required()
@@ -852,7 +851,7 @@ class PurchaseInvoice(BuyingController):
 
     def on_submit(self):
         super().on_submit()
-
+        self.validate_item_wise_budget()
         self.check_prev_docstatus()
 
         if self.is_return and not self.update_billed_amount_in_purchase_order:
