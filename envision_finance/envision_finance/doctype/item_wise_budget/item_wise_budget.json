@@ -9,13 +9,12 @@
   "section_break_lyvb",
   "company",
   "department",
+  "fiscal_year",
   "column_break_yukv",
   "project",
   "quotation",
   "disable",
   "control_action_section",
-  "applicable_on_material_request",
-  "action_if_annual_budget_exceeded_on_mr",
   "column_break_mknp",
   "applicable_on_purchase_order",
   "action_if_annual_budget_exceeded_on_po",
@@ -24,6 +23,8 @@
   "action_if_annual_budget_exceeded_on_pi",
   "section_break_ytbv",
   "budgeted_items",
+  "remarks",
+  "is_used",
   "amended_from"
  ],
  "fields": [
@@ -78,21 +79,6 @@
    "label": "Control Action"
   },
   {
-   "default": "0",
-   "fieldname": "applicable_on_material_request",
-   "fieldtype": "Check",
-   "label": "Applicable on Material Request"
-  },
-  {
-   "default": "Warn",
-   "depends_on": "eval:doc.applicable_on_material_request",
-   "fieldname": "action_if_annual_budget_exceeded_on_mr",
-   "fieldtype": "Select",
-   "label": "Action if Annual Budget Exceeded on Material Request",
-   "mandatory_depends_on": "eval:doc.applicable_on_material_request",
-   "options": "Stop\nWarn"
-  },
-  {
    "fieldname": "column_break_mknp",
    "fieldtype": "Column Break"
   },
@@ -142,6 +128,20 @@
    "reqd": 1
   },
   {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_used",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Is Used",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
    "fieldname": "amended_from",
    "fieldtype": "Link",
    "label": "Amended From",
@@ -150,12 +150,18 @@
    "print_hide": 1,
    "read_only": 1,
    "search_index": 1
+  },
+  {
+   "fieldname": "fiscal_year",
+   "fieldtype": "Link",
+   "label": "Fiscal Year",
+   "options": "Fiscal Year"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-08-28 18:22:58.107601",
+ "modified": "2024-08-29 18:13:11.033354",
  "modified_by": "Administrator",
  "module": "Envision Finance",
  "name": "Item wise Budget",

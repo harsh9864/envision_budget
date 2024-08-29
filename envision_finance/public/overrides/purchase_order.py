@@ -657,38 +657,55 @@ class PurchaseOrder(BuyingController):
         
         for item in self.items:
             
-            budget_all_data = self.budget_data(project,item.item_code,company,department)
+            budget_all_data = self.budget_data(project,company,department)
+            print(f"\n\n\n{budget_all_data}\n\n")
             #  For Checking the Budgets for the items
             for budget in budget_all_data:
-                print(f"\n\n\n\n{item.qty}\n\n\n\n{budget}\n\n\n")
-                if budget.quantity < item.qty:
-                    frappe.throw(
-                        title = "Quantity Overlimit",
-                        msg = f"Quantity Overlimit"
-                        )
-                
-                # for checking if the amount in the order doesn't exceed from the Budgeted amount of that item
-                elif budget.current_budget < item.amount:
-                    
-                    if budget.get('action_if_annual_budget_exceeded_on_po') == "Stop":
+                if budget.item == item.item_code:
+                    # for checking if the amount in the order doesn't exceed from the Budgeted amount of that item
+                    if budget.current_budget < item.amount:
                         
-                        frappe.throw(
-                            title = "Budget Overlimit",
-                            msg = f"<b>Budget</b>:{budget.name}<br><b> Item: {item.item_code} <br>Budget</b> for this item <b>{item.item_code}</b> is <b>{budget.current_budget}</b> and  your purchase amount is <b>{item.amount}</b> it is <b>{item.amount - budget.current_budget}</b>  greater than the Actual Budget."
-                            )
-                        
-                    elif budget.get('action_if_annual_budget_exceeded_on_po') == "Warn":
-                        
-                        frappe.msgprint(
-                            title = "Budget Overlimit Warning",
-                            indicator= "green",
-                            msg = f"<b>Budget</b>:{budget.name}<br><b> Item: {item.item_code} <br>Budget</b> for this item <b>{item.item_code}</b> is <b>{budget.current_budget}</b> and  your purchase amount is <b>{item.amount}</b> it is <b>{item.amount - budget.current_budget}</b>  greater than the Actual Budget."
-                            )
-                else:
-                    # Updating the Budget of that particular item and making an entry in the "Log" child table
-                    self.updating_budget(budget.get('name'),item.item_code,item.amount,self.doctype,self.name,item.qty)
+                        if budget.get('action_if_annual_budget_exceeded_on_po') == "Stop":
+                            
+                            frappe.throw(
+                                title = "Budget Overlimit",
+                                msg = f"<b>Budget</b>:{budget.name}<br><b> Item: {item.item_code} <br>Budget</b> for this item <b>{item.item_code}</b> is <b>{budget.current_budget}</b> and  your purchase amount is <b>{item.amount}</b> it is <b>{item.amount - budget.current_budget}</b>  greater than the Actual Budget."
+                                )
+                            
+                        elif budget.get('action_if_annual_budget_exceeded_on_po') == "Warn":
+                            
+                            frappe.msgprint(
+                                title = "Budget Overlimit Warning",
+                                indicator= "green",
+                                msg = f"<b>Budget</b>:{budget.name}<br><b> Item: {item.item_code} <br>Budget</b> for this item <b>{item.item_code}</b> is <b>{budget.current_budget}</b> and  your purchase amount is <b>{item.amount}</b> it is <b>{item.amount - budget.current_budget}</b>  greater than the Actual Budget."
+                                )
+                    else:
+                        # Updating the Budget of that particular item
+                        self.updating_budget(budget.get('name'),item.item_code,item.amount,self.doctype,self.name,item.qty)
 
-    def budget_data(self,project,item_code,company,department):
+                elif budget.item == item.item_group:
+                    # for checking if the amount in the order doesn't exceed from the Budgeted amount of that item
+                    if budget.current_budget < item.amount:
+                        
+                        if budget.get('action_if_annual_budget_exceeded_on_po') == "Stop":
+                            
+                            frappe.throw(
+                                title = "Budget Overlimit",
+                                msg = f"<b>Budget</b>:{budget.name}<br><b> Item: {item.item_code} <br>Budget</b> for this item <b>{item.item_code}</b> is <b>{budget.current_budget}</b> and  your purchase amount is <b>{item.amount}</b> it is <b>{item.amount - budget.current_budget}</b>  greater than the Actual Budget."
+                                )
+                            
+                        elif budget.get('action_if_annual_budget_exceeded_on_po') == "Warn":
+                            
+                            frappe.msgprint(
+                                title = "Budget Overlimit Warning",
+                                indicator= "green",
+                                msg = f"<b>Budget</b>:{budget.name}<br><b> Item: {item.item_code} <br>Budget</b> for this item <b>{item.item_code}</b> is <b>{budget.current_budget}</b> and  your purchase amount is <b>{item.amount}</b> it is <b>{item.amount - budget.current_budget}</b>  greater than the Actual Budget."
+                                )
+                    else:
+                        # Updating the Budget of that particular item
+                        self.updating_budget(budget.get('name'),item.item_group,item.amount,self.doctype,self.name,item.qty)
+                    
+    def budget_data(self,project,company,department):
         
         # Fetching all teh Data From the Item Wise Budget Doctype
         #  IB -> Item wise Budget
@@ -702,50 +719,50 @@ class PurchaseOrder(BuyingController):
                 BI.item,
                 BI.amount,
                 BI.current_budget,
-                BI.quantity
+                BI.quantity,
+                BI.remaining_quantity
             FROM `tabBudget Items` AS BI
             INNER JOIN `tabItem wise Budget` AS IB ON IB.name = BI.parent
             WHERE IB.applicable_on_purchase_order = 1
+            AND IB.docstatus = 1
+            AND IB.is_used = 1
+            AND IB.disable = 0
             AND IB.project = "{project}"
             AND IB.department = "{department}"
             AND IB.company = "{company}"
-            AND BI.item = "{item_code}"
-            AND IB.disable = 0
-            AND IB.docstatus = 1
             """
 
         budget_data = frappe.db.sql(budget_data_sql,as_dict = True)
         
         return budget_data
-
-    def updating_budget(self, budget, item_code, amount, doctype, name,qty):
+    def updating_budget(self, budget, item_code, amount, doctype, name, qty):
         
-        # Fetching the Item wise Budget document
         document = frappe.get_doc("Item wise Budget", budget)
-        print(f"\n\n\n\n\n{document.project}\n\n\n\n\n")
         
-        # Entering in the loop to update the budget of the respective item
+        # Flag to check if the item was found and updated
+        item_found = False
+        
+        # Entering the loop to update the budget of the respective item
         for i in document.budgeted_items:
             if i.item == item_code:
+                item_found = True
                 
-                print(f"ITEM::: {i.current_budget} and {amount} condition approved")
+                # Calculating the new budget and remaining quantity
                 result = i.current_budget - amount
-                print(result, "\n", i.name)
-                remaining_qty = i.quantity - qty
+                remaining_quantity = i.remaining_quantity - qty
                 
-                # Update the current_budget and quantity in Budget Items
+                # Updating the current_budget and remaining_quantity in Budget Items
+                frappe.db.set_value("Budget Items", i.name, {
+                    "current_budget": result,
+                    "remaining_quantity": remaining_quantity
+                })
                 
-                frappe.db.set_value("Budget Items", i.name, "current_budget", result)
-                frappe.db.set_value("Budget Items", i.name, "remaining_quantity", remaining_qty)
+                # Commit the changes to the database
+                frappe.db.commit()
                 
-                # Reloading the document to reflect the change 
-                # !!Important don't remove this it will give some unsual error
+                # Reload the document to reflect the changes
                 document.reload()
-                
                 break
-            else:
-                continue
-
 
 @frappe.request_cache
 def item_last_purchase_rate(name, conversion_rate, item_code, conversion_factor=1.0):

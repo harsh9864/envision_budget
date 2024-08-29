@@ -131,6 +131,7 @@ app_license = "mit"
 
 override_doctype_class = {
     "Purchase Order": "envision_finance.public.overrides.purchase_order.PurchaseOrder",
+    "Purchase Invoice": "envision_finance.public.overrides.purchase_invoice.PurchaseInvoice",
 }
 
 # Document Events
@@ -242,3 +243,11 @@ override_doctype_class = {
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
 
+fixtures = [
+    "Workflow",
+    "Workflow State",
+    "Custom DocPerm",
+    "Role",
+    "Role Profile",
+    "Workflow Action Master",
+]

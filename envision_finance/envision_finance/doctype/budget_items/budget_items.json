@@ -7,6 +7,7 @@
  "engine": "InnoDB",
  "field_order": [
   "details_section",
+  "apply_budget_on",
   "item",
   "item_group",
   "column_break_tnwv",
@@ -28,32 +29,34 @@
   },
   {
    "fieldname": "item",
-   "fieldtype": "Link",
+   "fieldtype": "Dynamic Link",
    "in_list_view": 1,
    "label": "Item",
-   "options": "Item",
-   "reqd": 1
+   "mandatory_depends_on": "eval: doc.apply_budget_on == \"Item\"",
+   "options": "apply_budget_on"
   },
   {
-   "fetch_from": "item.item_group",
+   "depends_on": "eval: doc.apply_budget_on != \"Item Group\"",
    "fieldname": "item_group",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "label": "Item Group",
-   "read_only": 1
+   "options": "Item Group",
+   "read_only": 1,
+   "read_only_depends_on": "eval: doc.apply_budget_on == \"Item Group\""
   },
   {
    "fieldname": "column_break_tnwv",
    "fieldtype": "Column Break"
   },
   {
-   "fetch_from": "item.stock_uom",
+   "depends_on": "eval: doc.apply_budget_on != \"Item Group\"",
    "fieldname": "uom",
    "fieldtype": "Data",
    "label": "UOM",
    "read_only": 1
   },
   {
-   "fetch_from": "item.gst_hsn_code",
+   "depends_on": "eval: doc.apply_budget_on != \"Item Group\"",
    "fieldname": "hsn__sac_code",
    "fieldtype": "Data",
    "label": "HSN / SAC Code",
@@ -69,7 +72,7 @@
    "fieldtype": "Float",
    "in_list_view": 1,
    "label": "Total Quantity",
-   "reqd": 1
+   "mandatory_depends_on": "eval: doc.apply_budget_on == \"Item\""
   },
   {
    "fieldname": "amount",
@@ -86,24 +89,33 @@
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Unit Price",
-   "reqd": 1
+   "mandatory_depends_on": "eval: doc.apply_budget_on == \"Item\"",
+   "read_only_depends_on": "eval: doc.apply_budget_on != \"Item\""
   },
   {
    "fieldname": "current_budget",
    "fieldtype": "Currency",
    "in_list_view": 1,
-   "label": "Remaining Budget"
+   "label": "Remaining Budget",
+   "read_only": 1
   },
   {
    "fieldname": "remaining_quantity",
    "fieldtype": "Float",
-   "label": "Remaining Quantity"
+   "label": "Remaining Quantity",
+   "read_only": 1
+  },
+  {
+   "fieldname": "apply_budget_on",
+   "fieldtype": "Select",
+   "label": "Apply Budget on",
+   "options": "Item\nItem Group"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-08-28 18:56:56.749191",
+ "modified": "2024-08-29 18:16:23.576263",
  "modified_by": "Administrator",
  "module": "Envision Finance",
  "name": "Budget Items",
