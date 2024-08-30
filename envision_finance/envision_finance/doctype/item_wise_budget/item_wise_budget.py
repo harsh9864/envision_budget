@@ -26,9 +26,9 @@ def verifying_the_budgeted_items() -> Union[List[Dict[str, Any]],None]:
 	item:str = frappe.form_dict['item']
 	applicable_on_purchase_order: bool = frappe.form_dict['applicable_on_purchase_order']
 	applicable_on_purchase_invoice: bool = frappe.form_dict['applicable_on_purchase_invoice']
+	fiscal_year:str = frappe.form_dict['fiscal_year']
 	# BI -> Budget Items
 	# IB -> Item wise Budget
-	print(f"\n\n\n\n{project}\n\n{department}\n\n{item}\n\n\n")
 	item_data_sql:str = f"""
 	
 	SELECT 
@@ -39,11 +39,14 @@ def verifying_the_budgeted_items() -> Union[List[Dict[str, Any]],None]:
 	WHERE IB.project = "{project}"
 	AND IB.department = "{department}"
 	AND BI.item = "{item}"
+	AND IB.fiscal_year = "{fiscal_year}"
 	AND IB.docstatus = 1
 	AND IB.is_used = 1
 	AND IB.disable = 0
-	AND IB.applicable_on_purchase_order = "{applicable_on_purchase_order}"
-	AND IB.applicable_on_purchase_invoice = "{applicable_on_purchase_invoice}"
+	AND (
+    IB.applicable_on_purchase_order = {applicable_on_purchase_order} 
+    OR IB.applicable_on_purchase_invoice = {applicable_on_purchase_invoice}
+);
 	"""
 	
 	item_data:List[Dict[str, Any]] = frappe.db.sql(item_data_sql, as_dict=True)

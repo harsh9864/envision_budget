@@ -78,6 +78,7 @@ frappe.ui.form.on("Budget Items",{
 
     item: function(frm, cdt, cdn) {
         var row = locals[cdt][cdn];
+        console.log(row.apply_budget_on)
         if (frm.doc.project != null && frm.doc.department != null && row.item != null) {
             if (row.apply_budget_on == "Item") {
                 frappe.call({
@@ -87,7 +88,8 @@ frappe.ui.form.on("Budget Items",{
                         department: frm.doc.department,
                         item: row.item,
                         applicable_on_purchase_order: frm.doc.applicable_on_purchase_order,
-                        applicable_on_purchase_invoice: frm.doc.applicable_on_purchase_invoice
+                        applicable_on_purchase_invoice: frm.doc.applicable_on_purchase_invoice,
+                        fiscal_year: frm.doc.fiscal_year
                     },
                     callback: function(response) {
                         if (response.data == null) {
