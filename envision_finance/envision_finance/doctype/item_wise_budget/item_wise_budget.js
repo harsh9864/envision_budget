@@ -43,9 +43,18 @@ frappe.ui.form.on("Budget Items",{
         var row = locals[cdt][cdn];
         if (row.apply_budget_on == "Item Group") {
             frappe.model.set_value(cdt, cdn, 'hsn__sac_code', null);
+            frappe.model.set_value(cdt, cdn, 'item_group', null);
             frappe.model.set_value(cdt, cdn, 'quantity', 0.00);
             frappe.model.set_value(cdt, cdn, 'remaining_quantity', 0.00);
             frappe.model.set_value(cdt, cdn, 'unit_price', 0.00); 
+            frm.fields_dict['budgeted_items'].grid.update_docfield_property('item', 'label', 'Item Group');
+            frm.fields_dict['budgeted_items'].grid.update_docfield_property('item_group', 'hidden', 1);
+            frm.refresh_field('budgeted_items');
+        }
+        if (row.apply_budget_on == "Item") {
+            frm.fields_dict['budgeted_items'].grid.update_docfield_property('item', 'label', 'Item');
+            frm.fields_dict['budgeted_items'].grid.update_docfield_property('item_group', 'hidden', 0);
+            frm.refresh_field('budgeted_items');
         }
     },
     quantity:function(frm,cdt,cdn){
@@ -79,7 +88,7 @@ frappe.ui.form.on("Budget Items",{
     item: function(frm, cdt, cdn) {
         var row = locals[cdt][cdn];
         console.log(row.apply_budget_on)
-        if (frm.doc.project != null && frm.doc.department != null && row.item != null) {
+        if (frm.doc.project != null && frm.doc.department != null && row.item != null && frm.doc.fiscal_year != null) {
             if (row.apply_budget_on == "Item") {
                 frappe.call({
                     method: "envision_finance.envision_finance.doctype.item_wise_budget.item_wise_budget.verifying_the_budgeted_items",
@@ -101,15 +110,21 @@ frappe.ui.form.on("Budget Items",{
                     }
                 });
             }
-        } else if (frm.doc.project == null) {
+        } else if (frm.doc.project == undefined || frm.doc.project == null) {
             cur_frm.clear_table("budgeted_items");
             cur_frm.refresh_field("budgeted_items");
             frappe.msgprint("Please specify the Project");
             cur_frm.refresh();
-        } else if (frm.doc.department == null) {
+        } else if (frm.doc.department == undefined || frm.doc.department == null) {
             cur_frm.clear_table("budgeted_items");
             cur_frm.refresh_field("budgeted_items");
             frappe.msgprint("Please specify the Department");
+            cur_frm.refresh();
+        }
+        else if (frm.doc.fiscal_year == undefined || frm.doc.fiscal_year == null) {
+            cur_frm.clear_table("budgeted_items");
+            cur_frm.refresh_field("budgeted_items");
+            frappe.msgprint("Please specify the Fiscal Year");
             cur_frm.refresh();
         }
 
