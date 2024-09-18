@@ -483,7 +483,7 @@ class PurchaseOrder(BuyingController):
         self.auto_create_subcontracting_order()
 
     def on_cancel(self):
-        print(f"""\n\n\n\n\nCancelled :: \n{self.doctype}\n\n\n\n\n\n {self.name}""")
+        self.updating_the_budget_data_after_cancellation()
         self.ignore_linked_doctypes = (
             "GL Entry",
             "Payment Ledger Entry",
@@ -517,6 +517,58 @@ class PurchaseOrder(BuyingController):
 
         unlink_inter_company_doc(self.doctype, self.name, self.inter_company_order_reference)
 
+    def updating_the_budget_data_after_cancellation(self):
+        company = self.company
+        project = self.project
+        department = self.department
+        for item in self.items:
+            budget_all_data = self.budget_data(project,company,department)
+            for budget in budget_all_data:
+                if budget.item == item.item_code:
+                    self.updating_budget_on_cancellation(budget.get('name'),item.item_code,item.amount,self.doctype,self.name,item.qty)
+                elif budget.item == item.item_group:
+                    self.updating_budget_on_cancellation(budget.get('name'),item.item_group,item.amount,self.doctype,self.name,item.qty)
+    def updating_budget_on_cancellation(self, budget, item_code, amount, doctype, name, qty):
+        document = frappe.get_doc("Item wise Budget", budget)
+        
+        # Flag to check if the item was found and updated
+        item_found = False
+        
+        # Entering the loop to update the budget of the respective item
+        for i in document.budgeted_items:
+            if i.item == item_code:
+                item_found = True
+                
+                # Calculating the new budget and remaining quantity
+                result = i.current_budget + amount
+                remaining_quantity = i.remaining_quantity + qty
+                
+                # Updating the current_budget and remaining_quantity in Budget Items
+                frappe.db.set_value("Budget Items", i.name, {
+                    "current_budget": result,
+                    "remaining_quantity": remaining_quantity
+                })
+                
+                # Commit the changes to the database
+                frappe.db.commit()
+                
+                # Reload the document to reflect the changes
+                document.reload()
+                break
+        if item_found:
+        # Entering the loop to check for matching id and name in the logs table
+            for log in document.logs:
+                if log.item == item_code and log.id == name and log.entry_type == doctype:
+                    # Removing the matching row from the logs table
+                    document.remove(log)
+                    
+                    # Save and commit the changes
+                    document.save()
+                    frappe.db.commit()
+                    # Reload the document to reflect the removal
+                    document.reload()
+                    break
+        
     def on_update(self):
         pass
 
@@ -651,12 +703,11 @@ class PurchaseOrder(BuyingController):
     def validate_item_wise_budget(self):
         company = self.company
         project = self.project
-        department = self.custom_department
+        department = self.department
         
         for item in self.items:
             
             budget_all_data = self.budget_data(project,company,department)
-            print(f"\n\n\n{budget_all_data}\n\n")
             #  For Checking the Budgets for the items
             for budget in budget_all_data:
                 if budget.item == item.item_code:
@@ -699,6 +750,7 @@ class PurchaseOrder(BuyingController):
                                 indicator= "green",
                                 msg = f"<b>Budget</b>:{budget.name}<br><b> Item: {item.item_code} <br>Budget</b> for this item <b>{item.item_code}</b> is <b>{budget.current_budget}</b> and  your purchase amount is <b>{item.amount}</b> it is <b>{item.amount - budget.current_budget}</b>  greater than the Actual Budget."
                                 )
+                            self.updating_budget(budget.get('name'),item.item_group,item.amount,self.doctype,self.name,item.qty)
                     else:
                         # Updating the Budget of that particular item
                         self.updating_budget(budget.get('name'),item.item_group,item.amount,self.doctype,self.name,item.qty)
@@ -761,6 +813,21 @@ class PurchaseOrder(BuyingController):
                 # Reload the document to reflect the changes
                 document.reload()
                 break
+        # If the item was found, proceed to add a row in the other child table
+        if item_found:
+            # Add a new row in the second child table (assuming it's called `additional_budget_info`)
+            new_row = document.append("logs", {})
+            new_row.item = item_code
+            new_row.amount = amount
+            new_row.entry_type = doctype  # Assuming the new row contains a doctype reference
+            new_row.id = name         # Assuming the new row contains the document name
+            new_row.quantity = qty                    # Add other fields as needed
+            
+            # Save the document to reflect the new row in the child table
+            document.save()
+            frappe.db.commit()
+            # Reload the document to ensure all changes are reflected
+            document.reload()
 
 @frappe.request_cache
 def item_last_purchase_rate(name, conversion_rate, item_code, conversion_factor=1.0):

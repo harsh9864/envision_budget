@@ -1,40 +1,105 @@
 frappe.ui.form.on("Item wise Budget", {
 
-    quotation: function(frm) {
-        frappe.call({
-            method: "frappe.client.get",
-            args: {
-                doctype: "Quotation",
-                name: frm.doc.quotation
-            },
-            callback:function(response){
-                let row = response.message.items
-                frm.clear_table("budgeted_items");
-                row.forEach(data => {
-                    let row = frm.add_child('budgeted_items',{
-                        item:data.item_code,
-                        quantity:data.qty,
-                        unit_price:data.rate,
-                        amount:data.amount,
-                        current_budget:data.amount,
-                        hsn_sac_code:data.gst_hsn_code,
-                        item_group:data.item_group,
-                        uom:data.uom
-                    })
-                    frm.refresh_field("budgeted_items")
-                })
-
+onload: function(frm){
+    frm.set_query("project", function() {
+        return {
+            filters: {
+                "company": frm.doc.company
             }
-        });
-    },
-    before_save: function (frm) {
-        if(frm.doc.applicable_on_purchase_order == 0 && frm.doc.applicable_on_purchase_invoice == 0){
-            frappe.throw("Please select at least one of the Control Action/s");
+        };
+    });
+    frm.set_query("quotation", function() {
+        return {
+            filters: {
+                "company": frm.doc.company
+            }
+        };
+    });
+    frm.set_query("department", function() {
+        return {
+            filters: {
+                "company": frm.doc.company
+            }
+        };
+    });
+    frm.set_value("fiscal_year", erpnext.utils.get_fiscal_year(frappe.datetime.get_today()))
+},
+
+quotation: function(frm) {
+    frappe.call({
+        method: "frappe.client.get",
+        args: {
+            doctype: "Quotation",
+            name: frm.doc.quotation
+        },
+        callback:function(response){
+            let row = response.message.items
+            frm.clear_table("budgeted_items");
+            row.forEach(data => {
+                let row = frm.add_child('budgeted_items',{
+                    item:data.item_code,
+                    quantity:data.qty,
+                    unit_price:data.rate,
+                    amount:data.amount,
+                    current_budget:data.amount,
+                    hsn_sac_code:data.gst_hsn_code,
+                    item_group:data.item_group,
+                    uom:data.uom
+                })
+                frm.refresh_field("budgeted_items")
+            })
+
         }
-        else{
-            frm.set_value("is_used",1)
+    });
+},
+
+project: function (frm) {
+    frappe.db.get_list('Project', {
+        filters: {
+            'name': frm.doc.project
+        },
+        fields: ['department']
+    }).then(result => {
+        if (result.length > 0) {
+            const department = result[0].department;
+            frm.set_value('department', department);
         }
-    },
+    });
+},
+
+before_save: function (frm) {
+    if(frm.doc.applicable_on_purchase_order == 0 && frm.doc.applicable_on_purchase_invoice == 0){
+        frappe.throw("Please select at least one of the Control Action/s");
+    }
+    else{
+        frm.set_value("is_used",1)
+    }
+
+    let budgeted_items_data = frm.doc.budgeted_items;
+    let stable_items_count = fluctuating_items_count = stable_items_budgeted_amount = fluctuating_items_budgeted_amount = total_count = total_budgeted_amount = 0;
+
+    for (let i = 0; i < budgeted_items_data.length; i++) {
+        if (budgeted_items_data[i].apply_budget_on == "Item") {
+            stable_items_count += budgeted_items_data[i].quantity;
+            total_count += budgeted_items_data[i].quantity;
+            stable_items_budgeted_amount += budgeted_items_data[i].amount;
+            total_budgeted_amount += budgeted_items_data[i].amount;
+        } else {
+            fluctuating_items_count += budgeted_items_data[i].quantity;
+            total_count += budgeted_items_data[i].quantity;
+            fluctuating_items_budgeted_amount += budgeted_items_data[i].amount;
+            total_budgeted_amount += budgeted_items_data[i].amount;
+        };
+    };
+
+    frm.set_value("stable_items_count",stable_items_count);
+    frm.set_value("fluctuating_items_count",fluctuating_items_count);
+    frm.set_value("stable_items_budgeted_amount",stable_items_budgeted_amount);
+    frm.set_value("fluctuating_items_budgeted_amount",fluctuating_items_budgeted_amount);
+    frm.set_value("total_count",total_count);
+    frm.set_value("total_budgeted_amount",total_budgeted_amount);
+
+},
 });
 
 frappe.ui.form.on("Budget Items",{
@@ -143,4 +208,4 @@ frappe.ui.form.on("Budget Items",{
             });
         }
     }
-})
+});
