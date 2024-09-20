@@ -13,20 +13,20 @@ def execute(filters=None):
 def get_columns() -> List[Dict[str, str]]:
 	return [
 		{
-			"label": _("Vendor"),
+			"label": _("<b>Vendor</b>"),
 			"fieldname": "supplier",
 			"fieldtype": "Link",
 			"options": "Supplier",
 			"width": 200,
 		},
 		{
-			"label": _("Budget"),
+			"label": _("<b>Budget</b>"),
 			"fieldname": "BUDGETED",
 			"fieldtype": "Float",
 			"width": 200,
 		},
 		{
-			"label": _("Actual"),
+			"label": _("<b>Actual</b>"),
 			"fieldname": "ACTUAL",
 			"fieldtype": "Float",
 			"width": 200,
@@ -35,15 +35,13 @@ def get_columns() -> List[Dict[str, str]]:
 
 
 def get_data(filters: Any) -> List[Dict[str, Any]]:
-	
-	# Query shortnames meaning
+	# Query shortnames:
 	# IWB -> Item wise Budget 
-	# BI -> Budget Items 
-	# PI ->  Purchase Invoice
+	# BI  -> Budget Items 
+	# PI  -> Purchase Invoice
 	# PII -> Purchase Invoice Item
 
-	result_data_sql:str = """
-	
+	result_data_sql: str = """
 	SELECT 
 		PI.supplier,
 		SUM(PII.amount) AS "ACTUAL",
@@ -57,10 +55,26 @@ def get_data(filters: Any) -> List[Dict[str, Any]]:
 		ON PI.name = PII.parent
 	WHERE PI.docstatus = 1
 	AND (BI.item = PII.item_code OR BI.item = PII.item_group)
-	GROUP BY PI.supplier
-	
-	""" 
-	
+	"""
+
+	# Add filters dynamically
+	if filters.get('from_date') and filters.get('to_date'):
+		result_data_sql += f"""
+		AND (PI.creation BETWEEN '{filters.get('from_date')}' AND '{filters.get('to_date')}')
+		"""
+
+	if filters.get('company'):
+		result_data_sql += f" AND PI.company = '{filters.get('company')}'"
+
+	if filters.get('project'):
+		result_data_sql += f" AND PI.project = '{filters.get('project')}'"
+		
+	if filters.get('supplier'):
+		result_data_sql += f" AND PI.supplier = '{filters.get('supplier')}'"
+	# Add the GROUP BY clause once, after all filters are applied
+	result_data_sql += " GROUP BY PI.supplier, PI.project, IWB.name"
+
+	# Execute the query and return the result as a list of dictionaries
 	result_data: List[Dict[str, Any]] = frappe.db.sql(result_data_sql, as_dict=True)
 	
 	return result_data
