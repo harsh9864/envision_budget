@@ -867,9 +867,9 @@ class PurchaseInvoice(BuyingController):
 
     def on_submit(self):
         super().on_submit()
-        self.validate_item_wise_budget()
         self.check_prev_docstatus()
-
+        if self.custom_update_budget == 1:
+            self.validate_item_wise_budget()
         if self.is_return and not self.update_billed_amount_in_purchase_order:
             # NOTE status updating bypassed for is_return
             self.status_updater = []

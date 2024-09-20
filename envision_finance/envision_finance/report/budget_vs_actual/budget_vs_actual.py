@@ -118,48 +118,60 @@ def get_data(filters: Any) -> List[Dict[str,Any]]:
 	# I -> Item
 	# P -> Project
 
-	result_data_sql:str = f"""
-
-	SELECT 
-		PI.supplier AS "Supplier",
-		(PII.amount) AS "ACTUAL",
-		(PII.qty) AS "Actual Qty",
-		(PII.rate) AS "Actual Rate",
-		(BI.amount) AS "BUDGETED",
-		(BI.current_budget) AS "Current Budget",
-		(BI.quantity) AS "Budgeted Qty",
-		(BI.unit_price) AS "Budgeted Rate",
-		BI.item AS "Item",
-		I.item_group AS "Category",
-		I.description AS "Particulars",
-		I.stock_uom AS "Units",
-		P.name AS "Project",
-		P.project_name AS "Project Name",
-		P.custom_project_coordinator AS "Project Coordinator",
-		P.department AS "Department"
-	FROM `tabItem wise Budget` AS IWB
-	INNER JOIN `tabPurchase Invoice` AS PI 
-		ON PI.project = IWB.project AND PI.department = IWB.department
-	INNER JOIN `tabBudget Items` AS BI 
-		ON IWB.name = BI.parent
-	INNER JOIN `tabPurchase Invoice Item` AS PII 
-		ON PI.name = PII.parent
-	INNER JOIN `tabItem` AS I
-		ON I.item_code = PII.item_code
-	INNER JOIN `tabProject` AS P 
-		ON P.name = PI.project AND P.name = IWB.project
-	WHERE PI.docstatus = 1
-		AND (BI.item = PII.item_code OR BI.item = PII.item_group)
-		AND DATE(PI.creation) BETWEEN "2024-09-18" AND "2024-09-20"
-	
+	result_data_sql = f"""
+		SELECT 
+			PI.supplier AS "Supplier",
+			(PII.amount) AS "ACTUAL",
+			(PII.qty) AS "Actual Qty",
+			(PII.rate) AS "Actual Rate",
+			(BI.amount) AS "BUDGETED",
+			(BI.current_budget) AS "Current Budget",
+			(BI.quantity) AS "Budgeted Qty",
+			(BI.unit_price) AS "Budgeted Rate",
+			BI.item AS "Item",
+			I.item_group AS "Category",
+			I.description AS "Particulars",
+			I.stock_uom AS "Units",
+			P.name AS "Project",
+			P.project_name AS "Project Name",
+			P.custom_project_coordinator AS "Project Coordinator",
+			PI.department AS "Department"
+		FROM `tabItem wise Budget` AS IWB
+		INNER JOIN `tabPurchase Invoice` AS PI 
+			ON PI.project = IWB.project AND PI.department = IWB.department
+		INNER JOIN `tabBudget Items` AS BI 
+			ON IWB.name = BI.parent
+		INNER JOIN `tabPurchase Invoice Item` AS PII 
+			ON PI.name = PII.parent
+		INNER JOIN `tabItem` AS I
+			ON I.item_code = PII.item_code
+		INNER JOIN `tabProject` AS P 
+			ON P.name = PI.project AND P.name = IWB.project
+		WHERE PI.docstatus = 1
+			AND (BI.item = PII.item_code OR BI.item = PII.item_group)
 	"""
 
+	# Add filters dynamically, ensuring correct concatenation and handling of empty filters
+	if filters.get('from_date') and filters.get('to_date'):
+		result_data_sql += f"""
+		AND (PI.creation BETWEEN '{filters.get('from_date')}' AND '{filters.get('to_date')}')
+		"""
+
 	if filters.get('company'):
-		result_data_sql += f"AND (PI.company = '{filters.get('company')}' OR '{filters.get('company')}' = '') ORDER BY PI.creation DESC"
-	elif filters.get('project'):
-		result_data_sql += f"AND (PI.project = '{filters.get('project')}' OR '{filters.get('project')}' = '')	"
-	else:
-		result_data_sql += f"ORDER BY PI.creation DESC"
+		result_data_sql += f" AND (PI.company = '{filters.get('company')}')"
+
+	if filters.get('project'):
+		result_data_sql += f" AND (PI.project = '{filters.get('project')}')"
+
+	if filters.get('department'):
+		result_data_sql += f" AND (PI.department = '{filters.get('department')}')"
+
+	if filters.get('project_coordinator'):
+		result_data_sql += f" AND (P.custom_project_coordinator = '{filters.get('project_coordinator')}')"
+
+	# Add the final ORDER BY clause
+	result_data_sql += " ORDER BY PI.creation DESC"
+
 	
 	
 	result_data:List[Dict[str,Any]] = frappe.db.sql(result_data_sql,as_dict = 1)

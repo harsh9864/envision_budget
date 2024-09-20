@@ -28,13 +28,13 @@ frappe.query_reports["Budget vs Actual"] = {
 			"label": __("Project"),
 			"fieldtype": "Link",
 			"options": "Project",
-			// get_query:function(){
-			// 	return {
-			// 		filters:{
-			// 			company : frappe.query_report.get_filter_value('company')
-			// 		}
-			// 	}
-			// }
+			get_query:function(){
+				return {
+					filters:{
+						company : frappe.query_report.get_filter_value('company')
+					}
+				}
+			}
 		},
 		{
 			"fieldname": "department",
@@ -55,47 +55,34 @@ frappe.query_reports["Budget vs Actual"] = {
 			"fieldtype": "Link",
 			"options": "User",
 		},
-		{
-			"fieldname": "voucher_type",
-			"label": __("Voucher Type"),
-			"fieldtype": "Select",
-			"options": ["Supplier", "Customer",],
-			"default": "Supplier",
-		},
-		{
-			"fieldname": "id",
-			"label": __("ID"),
-			"fieldtype": "Link",
-			"options": "Supplier", 
-		},
 	],
 
-	onload: function(report) {
-        var voucher_type_filter = frappe.query_report.get_filter("voucher_type");
-        var id_filter = frappe.query_report.get_filter("id");
+	// onload: function(report) {
+    //     var voucher_type_filter = frappe.query_report.get_filter("voucher_type");
+    //     var id_filter = frappe.query_report.get_filter("id");
 
-        // Set default value for voucher_type filter when the report loads
-        voucher_type_filter.set_value("Supplier");
+    //     // Set default value for voucher_type filter when the report loads
+    //     voucher_type_filter.set_value("Supplier");
 
-        // Add an event listener for changes to the voucher_type filter
-        voucher_type_filter.$input.on("change", function() {
-            var voucher_type = voucher_type_filter.get_value();
+    //     // Add an event listener for changes to the voucher_type filter
+    //     voucher_type_filter.$input.on("change", function() {
+    //         var voucher_type = voucher_type_filter.get_value();
             
-            // Update the options of the id filter based on the selected voucher_type
-            if (id_filter) {
-                // Update the filter options based on voucher_type
-				if (voucher_type === "Supplier") {
-                    id_filter.df.options = "Supplier";
-                } else if (voucher_type === "Customer") {
-                    id_filter.df.options = "Customer";
-                } else{
-                    id_filter.df.options = "";  // Clear options if no match
-                }
-                id_filter.refresh();  // Refresh the filter to apply the changes
-            }
+    //         // Update the options of the id filter based on the selected voucher_type
+    //         if (id_filter) {
+    //             // Update the filter options based on voucher_type
+	// 			if (voucher_type === "Supplier") {
+    //                 id_filter.df.options = "Supplier";
+    //             } else if (voucher_type === "Customer") {
+    //                 id_filter.df.options = "Customer";
+    //             } else{
+    //                 id_filter.df.options = "";  // Clear options if no match
+    //             }
+    //             id_filter.refresh();  // Refresh the filter to apply the changes
+    //         }
 
-            // Refresh the report to reflect the changes
-            frappe.query_report.refresh();
-        });
-    },
+    //         // Refresh the report to reflect the changes
+    //         frappe.query_report.refresh();
+    //     });
+    // },
 };
