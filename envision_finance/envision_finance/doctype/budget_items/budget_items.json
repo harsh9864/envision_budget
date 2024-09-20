@@ -77,7 +77,8 @@
    "fieldname": "amount",
    "fieldtype": "Currency",
    "in_list_view": 1,
-   "label": "Total Budget"
+   "label": "Total Budget",
+   "mandatory_depends_on": "eval:doc.apply_budget_on == \"Item Group\""
   },
   {
    "fieldname": "column_break_duoz",
@@ -115,7 +116,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-09-02 11:15:13.602682",
+ "modified": "2024-09-19 14:05:54.111691",
  "modified_by": "Administrator",
  "module": "Envision Finance",
  "name": "Budget Items",

@@ -9,19 +9,13 @@ frappe.query_reports["Budget vs Actual"] = {
 			"fieldtype": "Link",
 			"options": "Company",
 			"default": frappe.defaults.get_user_default("Company"),
-		},
-		{
-			"fieldname": "fiscal_year",
-			"label": __("Fiscal Year"),
-			"fieldtype": "Link",
-			"options": "Fiscal Year",
-			"default": erpnext.utils.get_fiscal_year(frappe.datetime.get_today()),
-		},		
+		},	
 		{
 			"fieldname": "from_date",
 			"label": __("From Date"),
 			"fieldtype": "Date",
 			"default": frappe.datetime.add_months(frappe.datetime.get_today(), -1),
+			
 		},
 		{
 			"fieldname": "to_date",
@@ -30,17 +24,49 @@ frappe.query_reports["Budget vs Actual"] = {
 			"default": frappe.datetime.get_today(),
 		},
 		{
+			"fieldname": "project",
+			"label": __("Project"),
+			"fieldtype": "Link",
+			"options": "Project",
+			// get_query:function(){
+			// 	return {
+			// 		filters:{
+			// 			company : frappe.query_report.get_filter_value('company')
+			// 		}
+			// 	}
+			// }
+		},
+		{
+			"fieldname": "department",
+			"label": __("Department"),
+			"fieldtype": "Link",
+			"options": "Department",
+			get_query:function(){
+				return {
+					filters:{
+						company : frappe.query_report.get_filter_value('company')
+					}
+				}
+			}
+		},
+		{
+			"fieldname": "project_coordinator",
+			"label": __("Project Coordinator"),
+			"fieldtype": "Link",
+			"options": "User",
+		},
+		{
 			"fieldname": "voucher_type",
 			"label": __("Voucher Type"),
 			"fieldtype": "Select",
-			"options": ["Project","Department","Supplier", "Customer"],
-			"default": "Project",
+			"options": ["Supplier", "Customer",],
+			"default": "Supplier",
 		},
 		{
 			"fieldname": "id",
 			"label": __("ID"),
 			"fieldtype": "Link",
-			"options": "Project",  // Default to Project, dynamically changed later
+			"options": "Supplier", 
 		},
 	],
 
@@ -49,7 +75,7 @@ frappe.query_reports["Budget vs Actual"] = {
         var id_filter = frappe.query_report.get_filter("id");
 
         // Set default value for voucher_type filter when the report loads
-        voucher_type_filter.set_value("Project");
+        voucher_type_filter.set_value("Supplier");
 
         // Add an event listener for changes to the voucher_type filter
         voucher_type_filter.$input.on("change", function() {
@@ -58,15 +84,11 @@ frappe.query_reports["Budget vs Actual"] = {
             // Update the options of the id filter based on the selected voucher_type
             if (id_filter) {
                 // Update the filter options based on voucher_type
-                if (voucher_type === "Project") {
-                    id_filter.df.options = "Project";
-                } else if (voucher_type === "Supplier") {
+				if (voucher_type === "Supplier") {
                     id_filter.df.options = "Supplier";
                 } else if (voucher_type === "Customer") {
                     id_filter.df.options = "Customer";
-                } else if (voucher_type === "Department") {
-                    id_filter.df.options = "Department";
-                }else {
+                } else{
                     id_filter.df.options = "";  // Clear options if no match
                 }
                 id_filter.refresh();  // Refresh the filter to apply the changes
