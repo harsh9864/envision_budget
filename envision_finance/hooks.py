@@ -244,10 +244,5 @@ override_doctype_class = {
 # }
 
 fixtures = [
-    "Workflow",
-    "Workflow State",
     "Custom DocPerm",
-    "Role",
-    "Role Profile",
-    "Workflow Action Master",
 ]
