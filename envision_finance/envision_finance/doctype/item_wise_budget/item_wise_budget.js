@@ -167,7 +167,7 @@ frappe.ui.form.on("Budget Items",{
                     },
                     callback: function(response) {
                         if (response.data == null) {
-                            console.log(1)
+                            var a = 1
                         }
                         else{
                             frappe.throw(`<b>Item Already exists in another Budget</b><br><br><b>${row.item}</b> already exists in Budget: <b>${response.data[0].name}</b>`);
