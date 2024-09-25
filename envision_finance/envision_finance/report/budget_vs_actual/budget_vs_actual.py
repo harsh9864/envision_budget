@@ -19,11 +19,11 @@ def get_columns() -> List[Dict[str,Any]]:
 			"options":"Department"
 		},
 		{
-			"label":"<b>Project Coordinator</b>",
-			"fieldname":"Project Coordinator",
+			"label":"<b>Client</b>",
+			"fieldname":"Client",
 			"fieldtype":"Link",
-			"options":"User",
-			"width":250
+			"options":"Customer",
+			"width":300
 		},
 		{
 			"label":"<b>Project Code</b>",
@@ -37,6 +37,13 @@ def get_columns() -> List[Dict[str,Any]]:
 			"fieldname":"Project Name",
 			"fieldtype":"Data",
 			"width":200
+		},
+		{
+			"label":"<b>Project Coordinator</b>",
+			"fieldname":"Project Coordinator",
+			"fieldtype":"Link",
+			"options":"User",
+			"width":250
 		},
 		{
 			"label":"<b>Category</b>",
@@ -121,6 +128,7 @@ def get_data(filters: Any) -> List[Dict[str,Any]]:
 	result_data_sql = f"""
 		SELECT 
 			PI.supplier AS "Supplier",
+			CONCAT(P.customer, " - ", C.customer_name) AS "Client",
 			(PII.amount) AS "ACTUAL",
 			(PII.qty) AS "Actual Qty",
 			(PII.rate) AS "Actual Rate",
@@ -147,6 +155,8 @@ def get_data(filters: Any) -> List[Dict[str,Any]]:
 			ON I.item_code = PII.item_code
 		INNER JOIN `tabProject` AS P 
 			ON P.name = PI.project AND P.name = IWB.project
+		INNER JOIN `tabCustomer` AS C
+			ON C.name = P.customer
 		WHERE PI.docstatus = 1
 			AND (BI.item = PII.item_code OR BI.item = PII.item_group)
 	"""
@@ -168,6 +178,9 @@ def get_data(filters: Any) -> List[Dict[str,Any]]:
 
 	if filters.get('project_coordinator'):
 		result_data_sql += f" AND (P.custom_project_coordinator = '{filters.get('project_coordinator')}')"
+
+	if filters.get('client'):
+		result_data_sql += f" AND (C.name = '{filters.get('client')}')"
 
 	# Add the final ORDER BY clause
 	result_data_sql += " ORDER BY PI.creation DESC"
