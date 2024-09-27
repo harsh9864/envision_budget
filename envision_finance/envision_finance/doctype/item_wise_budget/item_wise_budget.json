@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "autoname": "format:Budget-{project}-{###}",
  "creation": "2024-08-23 12:19:19.931193",
@@ -12,6 +13,7 @@
   "fiscal_year",
   "column_break_yukv",
   "project",
+  "project_name",
   "quotation",
   "disable",
   "control_action_section",
@@ -23,8 +25,19 @@
   "action_if_annual_budget_exceeded_on_pi",
   "section_break_ytbv",
   "budgeted_items",
-  "remarks",
+  "budget_summary_section",
+  "stable_items_count",
+  "fluctuating_items_count",
+  "total_count",
   "is_used",
+  "column_break_zhpy",
+  "stable_items_budgeted_amount",
+  "fluctuating_items_budgeted_amount",
+  "total_budgeted_amount",
+  "section_break_airr",
+  "remarks",
+  "logs_tab",
+  "logs",
   "amended_from"
  ],
  "fields": [
@@ -36,7 +49,7 @@
   {
    "fieldname": "company",
    "fieldtype": "Link",
-   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Company",
    "options": "Company",
    "reqd": 1
@@ -45,6 +58,7 @@
    "fieldname": "department",
    "fieldtype": "Link",
    "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Department",
    "options": "Department",
    "reqd": 1
@@ -56,12 +70,13 @@
   {
    "fieldname": "project",
    "fieldtype": "Link",
-   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Project",
    "options": "Project",
    "reqd": 1
   },
   {
+   "allow_on_submit": 1,
    "default": "0",
    "fieldname": "disable",
    "fieldtype": "Check",
@@ -118,7 +133,8 @@
   },
   {
    "fieldname": "section_break_ytbv",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Budget Details"
   },
   {
    "fieldname": "budgeted_items",
@@ -142,6 +158,91 @@
    "read_only": 1
   },
   {
+   "fieldname": "fiscal_year",
+   "fieldtype": "Link",
+   "label": "Fiscal Year",
+   "options": "Fiscal Year",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_zhpy",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "budget_summary_section",
+   "fieldtype": "Section Break",
+   "label": "Budget Summary"
+  },
+  {
+   "fieldname": "stable_items_count",
+   "fieldtype": "Float",
+   "label": "Stable Items Count",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "fluctuating_items_count",
+   "fieldtype": "Float",
+   "label": "Fluctuating Items Count",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_count",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Total Count",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "stable_items_budgeted_amount",
+   "fieldtype": "Float",
+   "label": "Stable Items Budgeted Amount ",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "fluctuating_items_budgeted_amount",
+   "fieldtype": "Float",
+   "label": "Fluctuating Items Budgeted Amount",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_budgeted_amount",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Total Budgeted Amount",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_airr",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fetch_from": "project.project_name",
+   "fieldname": "project_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Project Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "logs_tab",
+   "fieldtype": "Tab Break",
+   "label": "Logs"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "logs",
+   "fieldtype": "Table",
+   "label": "Logs",
+   "options": "Item wise Budget Logs",
+   "read_only": 1
+  },
+  {
    "fieldname": "amended_from",
    "fieldtype": "Link",
    "label": "Amended From",
@@ -150,20 +251,12 @@
    "print_hide": 1,
    "read_only": 1,
    "search_index": 1
-  },
-  {
-   "fieldname": "fiscal_year",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Fiscal Year",
-   "options": "Fiscal Year",
-   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-08-30 10:40:16.257471",
+ "modified": "2024-09-26 19:42:49.235328",
  "modified_by": "Administrator",
  "module": "Envision Finance",
  "name": "Item wise Budget",
@@ -171,6 +264,8 @@
  "owner": "Administrator",
  "permissions": [
   {
+   "amend": 1,
+   "cancel": 1,
    "create": 1,
    "delete": 1,
    "email": 1,
@@ -179,6 +274,7 @@
    "read": 1,
    "report": 1,
    "role": "System Manager",
+   "select": 1,
    "share": 1,
    "submit": 1,
    "write": 1
@@ -186,5 +282,6 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "title_field": "project_name"
 }

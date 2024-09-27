@@ -43,15 +43,14 @@ def verifying_the_budgeted_items() -> Union[List[Dict[str, Any]],None]:
 	AND IB.docstatus = 1
 	AND IB.is_used = 1
 	AND IB.disable = 0
-	AND (
-    IB.applicable_on_purchase_order = {applicable_on_purchase_order} 
-    OR IB.applicable_on_purchase_invoice = {applicable_on_purchase_invoice}
-);
 	"""
-	
+	if applicable_on_purchase_order:
+		item_data_sql += " AND IB.applicable_on_purchase_order = 1"
+	if applicable_on_purchase_invoice:
+		item_data_sql += " AND IB.applicable_on_purchase_invoice = 1"
 	item_data:List[Dict[str, Any]] = frappe.db.sql(item_data_sql, as_dict=True)
 	if item_data:
 		frappe.response['data'] = item_data
 	else:
 		frappe.response['data'] = None
-  
+
