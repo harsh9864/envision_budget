@@ -325,10 +325,10 @@ class PurchaseInvoice(BuyingController):
                                 indicator= "green",
                                 msg = f"<b>Budget</b>:{budget.name}<br><b> Item: {item.item_code} <br>Budget</b> for this item <b>{item.item_code}</b> is <b>{budget.current_budget}</b> and  your purchase amount is <b>{item.amount}</b> it is <b>{item.amount - budget.current_budget}</b>  greater than the Actual Budget."
                                 )
-                            self.updating_budget(budget.get('name'),item.item_code,item.amount,self.doctype,self.name,item.qty)
+                            self.updating_budget(budget.get('name'),item.item_code,item.amount,self.doctype,self.name,item.qty,item.rate,item.uom)
                     else:
                         # Updating the Budget of that particular item
-                        self.updating_budget(budget.get('name'),item.item_code,item.amount,self.doctype,self.name,item.qty)
+                        self.updating_budget(budget.get('name'),item.item_code,item.amount,self.doctype,self.name,item.qty,item.rate,item.uom)
 
                 elif budget.item == item.item_group:
                     # for checking if the amount in the order doesn't exceed from the Budgeted amount of that item
@@ -348,10 +348,10 @@ class PurchaseInvoice(BuyingController):
                                 indicator= "green",
                                 msg = f"<b>Budget</b>:{budget.name}<br><b> Item: {item.item_code} <br>Budget</b> for this item <b>{item.item_code}</b> is <b>{budget.current_budget}</b> and  your purchase amount is <b>{item.amount}</b> it is <b>{item.amount - budget.current_budget}</b>  greater than the Actual Budget."
                                 )
-                            self.updating_budget(budget.get('name'),item.item_group,item.amount,self.doctype,self.name,item.qty)
+                            self.updating_budget(budget.get('name'),item.item_code,item.amount,self.doctype,self.name,item.qty,item.rate,item.uom)
                     else:
                         # Updating the Budget of that particular item
-                        self.updating_budget(budget.get('name'),item.item_group,item.amount,self.doctype,self.name,item.qty)
+                        self.updating_budget(budget.get('name'),item.item_code,item.amount,self.doctype,self.name,item.qty,item.rate,item.uom)
                     
     def budget_data(self,project,company,department):
         
@@ -421,8 +421,9 @@ class PurchaseInvoice(BuyingController):
             new_row.amount = amount
             new_row.entry_type = doctype  # Assuming the new row contains a doctype reference
             new_row.id = name         # Assuming the new row contains the document name
-            new_row.quantity = qty                    # Add other fields as needed
-            
+            new_row.quantity = qty
+            new_row.rate = rate
+            new_row.uom = uom
             # Save the document to reflect the new row in the child table
             document.save()
             frappe.db.commit()
