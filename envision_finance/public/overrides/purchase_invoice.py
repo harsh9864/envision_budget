@@ -348,10 +348,10 @@ class PurchaseInvoice(BuyingController):
                                 indicator= "green",
                                 msg = f"<b>Budget</b>:{budget.name}<br><b> Item: {item.item_code} <br>Budget</b> for this item <b>{item.item_code}</b> is <b>{budget.current_budget}</b> and  your purchase amount is <b>{item.amount}</b> it is <b>{item.amount - budget.current_budget}</b>  greater than the Actual Budget."
                                 )
-                            self.updating_budget(budget.get('name'),item.item_code,item.amount,self.doctype,self.name,item.qty,item.rate,item.uom)
+                            self.updating_budget(budget.get('name'),item.item_group,item.amount,self.doctype,self.name,item.qty,item.rate,item.uom)
                     else:
                         # Updating the Budget of that particular item
-                        self.updating_budget(budget.get('name'),item.item_code,item.amount,self.doctype,self.name,item.qty,item.rate,item.uom)
+                        self.updating_budget(budget.get('name'),item.item_group,item.amount,self.doctype,self.name,item.qty,item.rate,item.uom)
                     
     def budget_data(self,project,company,department):
         
@@ -384,7 +384,7 @@ class PurchaseInvoice(BuyingController):
         
         return budget_data
 
-    def updating_budget(self, budget, item_code, amount, doctype, name, qty):
+    def updating_budget(self, budget, item_code, amount, doctype, name, qty, rate, uom):
         
         document = frappe.get_doc("Item wise Budget", budget)
         
@@ -412,24 +412,27 @@ class PurchaseInvoice(BuyingController):
                 # Reload the document to reflect the changes
                 document.reload()
                 break
-        
-        # If the item was found, proceed to add a row in the other child table
+            
+
+        # If the item was found, proceed to add a row in the other child table (logs table)
         if item_found:
-            # Add a new row in the second child table (assuming it's called `additional_budget_info`)
+            # Add a new row in the logs child table
             new_row = document.append("logs", {})
             new_row.item = item_code
             new_row.amount = amount
             new_row.entry_type = doctype  # Assuming the new row contains a doctype reference
-            new_row.id = name         # Assuming the new row contains the document name
-            new_row.quantity = qty
+            new_row.id = name             # Assuming the new row contains the document name
+            new_row.quantity = qty    
             new_row.rate = rate
             new_row.uom = uom
+            
             # Save the document to reflect the new row in the child table
             document.save()
             frappe.db.commit()
+            
             # Reload the document to ensure all changes are reflected
             document.reload()
-
+            
     def set_percentage_received(self):
         total_billed_qty = 0.0
         total_received_qty = 0.0
