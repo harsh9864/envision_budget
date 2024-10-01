@@ -28,14 +28,14 @@ def verifying_the_budgeted_items() -> Union[List[Dict[str, Any]],None]:
 	applicable_on_purchase_invoice: bool = frappe.form_dict['applicable_on_purchase_invoice']
 	fiscal_year:str = frappe.form_dict['fiscal_year']
 	# BI -> Budget Items
-	# IB -> Item wise Budget
+	# IB -> Project Budget
 	item_data_sql:str = f"""
 	
 	SELECT 
 	BI.item,
 	IB.name
 	FROM `tabBudget Items` AS BI
-	INNER JOIN `tabItem wise Budget` AS IB ON IB.name = BI.parent
+	INNER JOIN `tabProject Budget` AS IB ON IB.name = BI.parent
 	WHERE IB.project = "{project}"
 	AND IB.department = "{department}"
 	AND BI.item = "{item}"
