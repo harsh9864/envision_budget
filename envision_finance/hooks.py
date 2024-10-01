@@ -245,4 +245,5 @@ override_doctype_dashboards = {
 
 fixtures = [
     "Custom DocPerm",
+    "Workspace"
 ]
