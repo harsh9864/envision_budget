@@ -6,7 +6,7 @@ from typing import Union,List,Dict,Any
 from frappe.model.document import Document
 
 
-class ItemwiseBudget(Document):
+class ProjectBudget(Document):
 	pass
 
 @frappe.whitelist()

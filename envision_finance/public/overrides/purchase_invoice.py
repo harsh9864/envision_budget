@@ -348,15 +348,15 @@ class PurchaseInvoice(BuyingController):
                                 indicator= "green",
                                 msg = f"<b>Budget</b>:{budget.name}<br><b> Item: {item.item_code} <br>Budget</b> for this item <b>{item.item_code}</b> is <b>{budget.current_budget}</b> and  your purchase amount is <b>{item.amount}</b> it is <b>{item.amount - budget.current_budget}</b>  greater than the Actual Budget."
                                 )
-                            self.updating_budget(budget.get('name'),item.item_code,item.amount,self.doctype,self.name,item.qty,item.rate,item.uom)
+                            self.updating_budget(budget.get('name'),item.item_group,item.amount,self.doctype,self.name,item.qty,item.rate,item.uom)
                     else:
                         # Updating the Budget of that particular item
-                        self.updating_budget(budget.get('name'),item.item_code,item.amount,self.doctype,self.name,item.qty,item.rate,item.uom)
+                        self.updating_budget(budget.get('name'),item.item_group,item.amount,self.doctype,self.name,item.qty,item.rate,item.uom)
                     
     def budget_data(self,project,company,department):
         
-        # Fetching all teh Data From the Item Wise Budget Doctype
-        #  IB -> Item wise Budget
+        # Fetching all teh Data From the Project Budget Doctype
+        #  IB -> Project Budget
         #  BI -> Budget Items
         
         budget_data_sql = f"""
@@ -370,7 +370,7 @@ class PurchaseInvoice(BuyingController):
                 BI.quantity,
                 BI.remaining_quantity
             FROM `tabBudget Items` AS BI
-            INNER JOIN `tabItem wise Budget` AS IB ON IB.name = BI.parent
+            INNER JOIN `tabProject Budget` AS IB ON IB.name = BI.parent
             WHERE IB.applicable_on_purchase_invoice = 1
             AND IB.docstatus = 1
             AND IB.is_used = 1
@@ -384,9 +384,9 @@ class PurchaseInvoice(BuyingController):
         
         return budget_data
 
-    def updating_budget(self, budget, item_code, amount, doctype, name, qty):
+    def updating_budget(self, budget, item_code, amount, doctype, name, qty,rate,uom):
         
-        document = frappe.get_doc("Item wise Budget", budget)
+        document = frappe.get_doc("Project Budget", budget)
         
         # Flag to check if the item was found and updated
         item_found = False
@@ -1700,7 +1700,7 @@ class PurchaseInvoice(BuyingController):
                 elif budget.item == item.item_group:
                     self.updating_budget_on_cancellation(budget.get('name'),item.item_group,item.amount,self.doctype,self.name,item.qty)
     def updating_budget_on_cancellation(self, budget, item_code, amount, doctype, name, qty):
-        document = frappe.get_doc("Item wise Budget", budget)
+        document = frappe.get_doc("Project Budget", budget)
         
         # Flag to check if the item was found and updated
         item_found = False

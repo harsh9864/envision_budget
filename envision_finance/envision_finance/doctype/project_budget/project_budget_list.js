@@ -1,6 +1,6 @@
-frappe.listview_settings["Item wise Budget"] = {
+frappe.listview_settings["Project Budget"] = {
     refresh: function(listview) {
-        listview.page.add_inner_button(__("Item wise Budget V/s Actual"), function() {
+        listview.page.add_inner_button(__("Project Budget V/s Actual"), function() {
             frappe.set_route('query-report', 'Budget vs Actual');
         }, __("Report"));
         listview.page.add_inner_button(__("Quarter wise Budget V/s Actual"), function() {

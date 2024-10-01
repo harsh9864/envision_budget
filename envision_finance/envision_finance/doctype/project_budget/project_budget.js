@@ -1,4 +1,4 @@
-frappe.ui.form.on("Item wise Budget", {
+frappe.ui.form.on("Project Budget", {
 
 onload: function(frm){
     frm.set_query("project", function() {
@@ -184,12 +184,6 @@ frappe.ui.form.on("Budget Items",{
             cur_frm.clear_table("budgeted_items");
             cur_frm.refresh_field("budgeted_items");
             frappe.msgprint("Please specify the Department");
-            cur_frm.refresh();
-        }
-        else if (frm.doc.fiscal_year == undefined || frm.doc.fiscal_year == null) {
-            cur_frm.clear_table("budgeted_items");
-            cur_frm.refresh_field("budgeted_items");
-            frappe.msgprint("Please specify the Fiscal Year");
             cur_frm.refresh();
         }
 
