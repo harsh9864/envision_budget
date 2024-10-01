@@ -175,17 +175,20 @@ frappe.ui.form.on("Budget Items",{
                     }
                 });
             }
-        } else if (frm.doc.project == undefined || frm.doc.project == null) {
+        } 
+        else if (frm.doc.project == undefined || frm.doc.project == null) {
             cur_frm.clear_table("budgeted_items");
             cur_frm.refresh_field("budgeted_items");
             frappe.msgprint("Please specify the Project");
             cur_frm.refresh();
-        } else if (frm.doc.department == undefined || frm.doc.department == null) {
+        } 
+        else if (frm.doc.department == undefined || frm.doc.department == null) {
             cur_frm.clear_table("budgeted_items");
             cur_frm.refresh_field("budgeted_items");
             frappe.msgprint("Please specify the Department");
             cur_frm.refresh();
         }
+
         if (row.apply_budget_on == "Item") {
             frappe.call({
                 method: "envision_finance.envision_finance.doctype.project_budget.project_budget.get_item_details",
