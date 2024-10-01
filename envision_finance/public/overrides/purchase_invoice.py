@@ -412,24 +412,27 @@ class PurchaseInvoice(BuyingController):
                 # Reload the document to reflect the changes
                 document.reload()
                 break
-        
-        # If the item was found, proceed to add a row in the other child table
+            
+
+        # If the item was found, proceed to add a row in the other child table (logs table)
         if item_found:
-            # Add a new row in the second child table (assuming it's called `additional_budget_info`)
+            # Add a new row in the logs child table
             new_row = document.append("logs", {})
             new_row.item = item_code
             new_row.amount = amount
             new_row.entry_type = doctype  # Assuming the new row contains a doctype reference
-            new_row.id = name         # Assuming the new row contains the document name
-            new_row.quantity = qty
+            new_row.id = name             # Assuming the new row contains the document name
+            new_row.quantity = qty    
             new_row.rate = rate
             new_row.uom = uom
+            
             # Save the document to reflect the new row in the child table
             document.save()
             frappe.db.commit()
+            
             # Reload the document to ensure all changes are reflected
             document.reload()
-
+            
     def set_percentage_received(self):
         total_billed_qty = 0.0
         total_received_qty = 0.0
