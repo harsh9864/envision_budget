@@ -186,7 +186,6 @@ frappe.ui.form.on("Budget Items",{
             frappe.msgprint("Please specify the Department");
             cur_frm.refresh();
         }
-
         if (row.apply_budget_on == "Item") {
             frappe.call({
                 method: "envision_finance.envision_finance.doctype.project_budget.project_budget.get_item_details",
