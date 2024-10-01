@@ -36,7 +36,6 @@
    "reqd": 1
   },
   {
-   "depends_on": "eval: doc.apply_budget_on != \"Item Group\"",
    "fieldname": "item_group",
    "fieldtype": "Link",
    "label": "Item Group",
@@ -71,14 +70,18 @@
    "fieldtype": "Float",
    "in_list_view": 1,
    "label": "Total Quantity",
-   "mandatory_depends_on": "eval: doc.apply_budget_on == \"Item\""
+   "mandatory_depends_on": "eval: doc.apply_budget_on == \"Item\"",
+   "non_negative": 1,
+   "precision": "2"
   },
   {
    "fieldname": "amount",
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Total Budget",
-   "mandatory_depends_on": "eval:doc.apply_budget_on == \"Item Group\""
+   "mandatory_depends_on": "eval:doc.apply_budget_on == \"Item Group\"",
+   "non_negative": 1,
+   "precision": "2"
   },
   {
    "fieldname": "column_break_duoz",
@@ -89,8 +92,9 @@
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Unit Price",
-   "mandatory_depends_on": "eval: doc.apply_budget_on == \"Item\"",
-   "read_only_depends_on": "eval: doc.apply_budget_on != \"Item\""
+   "non_negative": 1,
+   "precision": "2",
+   "reqd": 1
   },
   {
    "fieldname": "current_budget",
@@ -116,7 +120,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-09-19 14:05:54.111691",
+ "modified": "2024-10-01 11:37:53.729356",
  "modified_by": "Administrator",
  "module": "Envision Finance",
  "name": "Budget Items",

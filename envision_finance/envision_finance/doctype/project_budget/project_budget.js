@@ -1,4 +1,4 @@
-frappe.ui.form.on("Item wise Budget", {
+frappe.ui.form.on("Project Budget", {
 
 onload: function(frm){
     frm.set_query("project", function() {
@@ -156,7 +156,7 @@ frappe.ui.form.on("Budget Items",{
         if (frm.doc.project != null && frm.doc.department != null && row.item != null && frm.doc.fiscal_year != null) {
             if (row.apply_budget_on == "Item") {
                 frappe.call({
-                    method: "envision_finance.envision_finance.doctype.item_wise_budget.item_wise_budget.verifying_the_budgeted_items",
+                    method: "envision_finance.envision_finance.doctype.project_budget.project_budget.verifying_the_budgeted_items",
                     args: {
                         project: frm.doc.project,
                         department: frm.doc.department,
@@ -186,16 +186,9 @@ frappe.ui.form.on("Budget Items",{
             frappe.msgprint("Please specify the Department");
             cur_frm.refresh();
         }
-        else if (frm.doc.fiscal_year == undefined || frm.doc.fiscal_year == null) {
-            cur_frm.clear_table("budgeted_items");
-            cur_frm.refresh_field("budgeted_items");
-            frappe.msgprint("Please specify the Fiscal Year");
-            cur_frm.refresh();
-        }
-
         if (row.apply_budget_on == "Item") {
             frappe.call({
-                method: "envision_finance.envision_finance.doctype.item_wise_budget.item_wise_budget.get_item_details",
+                method: "envision_finance.envision_finance.doctype.project_budget.project_budget.get_item_details",
                 args: {
                     item_code: row.item
                 },

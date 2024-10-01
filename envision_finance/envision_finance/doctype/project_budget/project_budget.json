@@ -2,7 +2,7 @@
  "actions": [],
  "allow_import": 1,
  "allow_rename": 1,
- "autoname": "format:Budget-{project}-{###}",
+ "autoname": "naming_series:",
  "creation": "2024-08-23 12:19:19.931193",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -11,6 +11,7 @@
   "company",
   "department",
   "fiscal_year",
+  "naming_series",
   "column_break_yukv",
   "project",
   "project_name",
@@ -243,11 +244,17 @@
    "read_only": 1
   },
   {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Naming Series",
+   "options": "PB.####"
+  },
+  {
    "fieldname": "amended_from",
    "fieldtype": "Link",
    "label": "Amended From",
    "no_copy": 1,
-   "options": "Item wise Budget",
+   "options": "Project Budget",
    "print_hide": 1,
    "read_only": 1,
    "search_index": 1
@@ -256,11 +263,11 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-09-26 19:42:49.235328",
+ "modified": "2024-10-01 12:39:12.523788",
  "modified_by": "Administrator",
  "module": "Envision Finance",
- "name": "Item wise Budget",
- "naming_rule": "Expression",
+ "name": "Project Budget",
+ "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [
   {

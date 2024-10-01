@@ -529,7 +529,7 @@ class PurchaseOrder(BuyingController):
                 elif budget.item == item.item_group:
                     self.updating_budget_on_cancellation(budget.get('name'),item.item_group,item.amount,self.doctype,self.name,item.qty)
     def updating_budget_on_cancellation(self, budget, item_code, amount, doctype, name, qty):
-        document = frappe.get_doc("Item wise Budget", budget)
+        document = frappe.get_doc("Project Budget", budget)
         
         # Flag to check if the item was found and updated
         item_found = False
@@ -766,8 +766,8 @@ class PurchaseOrder(BuyingController):
                     
     def budget_data(self,project,company,department):
         
-        # Fetching all teh Data From the Item Wise Budget Doctype
-        #  IB -> Item wise Budget
+        # Fetching all teh Data From the Project Budget Doctype
+        #  IB -> Project Budget
         #  BI -> Budget Items
         
         budget_data_sql = f"""
@@ -781,7 +781,7 @@ class PurchaseOrder(BuyingController):
                 BI.quantity,
                 BI.remaining_quantity
             FROM `tabBudget Items` AS BI
-            INNER JOIN `tabItem wise Budget` AS IB ON IB.name = BI.parent
+            INNER JOIN `tabProject Budget` AS IB ON IB.name = BI.parent
             WHERE IB.applicable_on_purchase_order = 1
             AND IB.docstatus = 1
             AND IB.is_used = 1
@@ -796,7 +796,7 @@ class PurchaseOrder(BuyingController):
         return budget_data
     def updating_budget(self, budget, item_code, amount, doctype, name, qty, rate, uom):
         
-        document = frappe.get_doc("Item wise Budget", budget)
+        document = frappe.get_doc("Project Budget", budget)
         
         # Flag to check if the item was found and updated
         item_found = False
