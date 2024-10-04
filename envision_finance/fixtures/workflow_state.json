@@ -3,15 +3,6 @@
   "docstatus": 0,
   "doctype": "Workflow State",
   "icon": "",
-  "modified": "2024-10-04 11:09:10.985629",
-  "name": "Rework",
-  "style": "Warning",
-  "workflow_state_name": "Rework"
- },
- {
-  "docstatus": 0,
-  "doctype": "Workflow State",
-  "icon": "",
   "modified": "2024-10-01 15:34:22.955254",
   "name": "Rejected",
   "style": "Danger",
@@ -21,10 +12,10 @@
   "docstatus": 0,
   "doctype": "Workflow State",
   "icon": "",
-  "modified": "2024-10-01 15:32:58.565765",
-  "name": "Budget Review",
-  "style": "Info",
-  "workflow_state_name": "Budget Review"
+  "modified": "2024-10-04 11:09:10.985629",
+  "name": "Rework",
+  "style": "Warning",
+  "workflow_state_name": "Rework"
  },
  {
   "docstatus": 0,
@@ -34,6 +25,15 @@
   "name": "Approved",
   "style": "Success",
   "workflow_state_name": "Approved"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": "",
+  "modified": "2024-10-01 15:32:58.565765",
+  "name": "Budget Review",
+  "style": "Info",
+  "workflow_state_name": "Budget Review"
  },
  {
   "docstatus": 0,
