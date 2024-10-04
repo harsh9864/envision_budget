@@ -21,9 +21,13 @@
   "column_break_mknp",
   "applicable_on_purchase_order",
   "action_if_annual_budget_exceeded_on_po",
+  "applicable_on_journal_entry",
+  "action_if_annual_budget_exceeded_on_journal_entry",
   "column_break_ohik",
   "applicable_on_purchase_invoice",
   "action_if_annual_budget_exceeded_on_pi",
+  "applicable_on_payroll_entry",
+  "action_if_annual_budget_exceeded_on_payroll_entry",
   "section_break_ytbv",
   "budgeted_items",
   "budget_summary_section",
@@ -259,12 +263,40 @@
    "print_hide": 1,
    "read_only": 1,
    "search_index": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "applicable_on_journal_entry",
+   "fieldtype": "Check",
+   "label": "Applicable on Journal Entry"
+  },
+  {
+   "default": "Warn",
+   "depends_on": "eval:doc.applicable_on_journal_entry",
+   "fieldname": "action_if_annual_budget_exceeded_on_journal_entry",
+   "fieldtype": "Select",
+   "label": "Action if Annual Budget Exceeded on Journal Entry",
+   "options": "Stop\nWarn"
+  },
+  {
+   "default": "0",
+   "fieldname": "applicable_on_payroll_entry",
+   "fieldtype": "Check",
+   "label": "Applicable on Payroll Entry"
+  },
+  {
+   "default": "Warn",
+   "depends_on": "eval:doc.applicable_on_payroll_entry",
+   "fieldname": "action_if_annual_budget_exceeded_on_payroll_entry",
+   "fieldtype": "Select",
+   "label": "Action if Annual Budget Exceeded on Payroll Entry",
+   "options": "Stop\nWarn"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-10-01 15:14:55.125713",
+ "modified": "2024-10-04 15:30:50.490393",
  "modified_by": "Administrator",
  "module": "Envision Finance",
  "name": "Project Budget",
