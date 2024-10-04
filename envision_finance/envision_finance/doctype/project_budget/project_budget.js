@@ -22,18 +22,12 @@ frappe.ui.form.on("Project Budget", {
             var script = document.createElement('script');
             script.src = "https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js";
             script.onload = function() {
-                console.log('SheetJS library loaded');
                 // Add the download button after the library is loaded
                 frm.fields_dict["budgeted_items"].grid.add_custom_button(__('Download'), function() {
                     downloadXLSXTemplate();
                 });
             };
             document.head.appendChild(script);
-        } else {
-            // If already loaded, add the button immediately
-            frm.add_custom_button(__('Download XLSX Template'), function() {
-                downloadXLSXTemplate();
-            });
         }
     }
     },
@@ -61,34 +55,6 @@ onload: function(frm){
         };
     });
     frm.set_value("fiscal_year", erpnext.utils.get_fiscal_year(frappe.datetime.get_today()))
-},
-
-quotation: function(frm) {
-    frappe.call({
-        method: "frappe.client.get",
-        args: {
-            doctype: "Quotation",
-            name: frm.doc.quotation
-        },
-        callback:function(response){
-            let row = response.message.items
-            frm.clear_table("budgeted_items");
-            row.forEach(data => {
-                let row = frm.add_child('budgeted_items',{
-                    item:data.item_code,
-                    quantity:data.qty,
-                    unit_price:data.rate,
-                    amount:data.amount,
-                    current_budget:data.amount,
-                    hsn_sac_code:data.gst_hsn_code,
-                    item_group:data.item_group,
-                    uom:data.uom
-                })
-                frm.refresh_field("budgeted_items")
-            })
-
-        }
-    });
 },
 
 project: function (frm) {
@@ -265,7 +231,6 @@ function handleFileUpload(file) {
         reader.readAsArrayBuffer(file); // Read XLSX as array buffer
     }
 }
-
 
 // This function processes the JSON data extracted from the XLSX file
 function processXLSXData(jsonData) {

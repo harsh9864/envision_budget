@@ -43,7 +43,10 @@
   "remarks",
   "logs_tab",
   "logs",
-  "amended_from"
+  "transaction_logs_tab",
+  "transactional_logs",
+  "revenue_logs_tab",
+  "revenue_logs"
  ],
  "fields": [
   {
@@ -96,7 +99,7 @@
   {
    "fieldname": "control_action_section",
    "fieldtype": "Section Break",
-   "label": "Control Action"
+   "label": "Control Actions"
   },
   {
    "fieldname": "column_break_mknp",
@@ -237,15 +240,14 @@
   {
    "fieldname": "logs_tab",
    "fieldtype": "Tab Break",
-   "label": "Logs"
+   "label": "Expense Logs"
   },
   {
    "allow_on_submit": 1,
    "fieldname": "logs",
    "fieldtype": "Table",
-   "label": "Logs",
-   "options": "Item wise Budget Logs",
-   "read_only": 1
+   "label": "Expense Logs",
+   "options": "Item wise Budget Logs"
   },
   {
    "default": "PB.project.-.###",
@@ -253,16 +255,6 @@
    "fieldtype": "Select",
    "label": "Naming Series",
    "options": "PB.project.-.###\nPB.####"
-  },
-  {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "label": "Amended From",
-   "no_copy": 1,
-   "options": "Project Budget",
-   "print_hide": 1,
-   "read_only": 1,
-   "search_index": 1
   },
   {
    "default": "0",
@@ -291,12 +283,34 @@
    "fieldtype": "Select",
    "label": "Action if Annual Budget Exceeded on Payroll Entry",
    "options": "Stop\nWarn"
+  },
+  {
+   "fieldname": "revenue_logs",
+   "fieldtype": "Table",
+   "label": "Revenue Logs",
+   "options": "Item wise Budget Logs"
+  },
+  {
+   "fieldname": "revenue_logs_tab",
+   "fieldtype": "Tab Break",
+   "label": "Revenue Logs"
+  },
+  {
+   "fieldname": "transaction_logs_tab",
+   "fieldtype": "Tab Break",
+   "label": "Transaction Logs"
+  },
+  {
+   "fieldname": "transactional_logs",
+   "fieldtype": "Table",
+   "label": "Transactional Logs",
+   "options": "Transaction wise Budget Logs"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-10-04 15:30:50.490393",
+ "modified": "2024-10-04 18:26:50.008614",
  "modified_by": "Administrator",
  "module": "Envision Finance",
  "name": "Project Budget",
