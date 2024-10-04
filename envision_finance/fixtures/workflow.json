@@ -4,7 +4,7 @@
   "doctype": "Workflow",
   "document_type": "Project Budget",
   "is_active": 1,
-  "modified": "2024-10-04 11:54:56.301239",
+  "modified": "2024-10-04 12:57:23.096820",
   "name": "Project Budget",
   "override_status": 0,
   "send_email_alert": 0,
@@ -50,8 +50,8 @@
     "parentfield": "states",
     "parenttype": "Workflow",
     "state": "Director Review",
-    "update_field": null,
-    "update_value": null,
+    "update_field": "disable",
+    "update_value": "1",
     "workflow_builder_id": null
    },
    {
@@ -65,8 +65,8 @@
     "parentfield": "states",
     "parenttype": "Workflow",
     "state": "Approved",
-    "update_field": null,
-    "update_value": null,
+    "update_field": "disable",
+    "update_value": "0",
     "workflow_builder_id": null
    },
    {

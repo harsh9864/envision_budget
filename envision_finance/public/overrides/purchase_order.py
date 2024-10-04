@@ -542,7 +542,10 @@ class PurchaseOrder(BuyingController):
                 # Calculating the new budget and remaining quantity
                 result = i.current_budget + amount
                 remaining_quantity = i.remaining_quantity + qty
-                
+                if result > i.amount:
+                    result = i.amount
+                if remaining_quantity > i.quantity:
+                    remaining_quantity = i.quantity
                 # Updating the current_budget and remaining_quantity in Budget Items
                 frappe.db.set_value("Budget Items", i.name, {
                     "current_budget": result,
@@ -801,7 +804,6 @@ class PurchaseOrder(BuyingController):
                 # Calculating the new budget and remaining quantity
                 result = i.current_budget - amount
                 remaining_quantity = i.remaining_quantity - qty
-                
                 # Updating the current_budget and remaining_quantity in Budget Items
                 frappe.db.set_value("Budget Items", i.name, {
                     "current_budget": result,
