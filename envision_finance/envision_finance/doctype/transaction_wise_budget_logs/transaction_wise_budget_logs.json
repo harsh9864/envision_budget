@@ -9,18 +9,17 @@
   "document_details_section",
   "column_break_uduq",
   "entry_type",
-  "id",
   "column_break_ffgz",
-  "company",
-  "amount",
+  "entry_id",
   "transaction_entry_details_section",
-  "credit_account",
-  "credit_amount",
-  "credit_currency",
   "column_break_zhpp",
-  "debit_account",
-  "debit_amount",
-  "debit_currency"
+  "account",
+  "amount",
+  "currency",
+  "column_break_gihc",
+  "company",
+  "is_credited",
+  "is_debited"
  ],
  "fields": [
   {
@@ -45,72 +44,69 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "id",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "ID"
-  },
-  {
    "fieldname": "transaction_entry_details_section",
    "fieldtype": "Section Break",
    "label": "Transaction Entry Details"
-  },
-  {
-   "fieldname": "credit_account",
-   "fieldtype": "Link",
-   "label": "Credit Account",
-   "options": "Account"
-  },
-  {
-   "fieldname": "credit_amount",
-   "fieldtype": "Currency",
-   "label": "Credit Amount"
   },
   {
    "fieldname": "column_break_zhpp",
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "debit_account",
-   "fieldtype": "Link",
-   "label": "Debit Account",
-   "options": "Account"
-  },
-  {
-   "fieldname": "debit_amount",
-   "fieldtype": "Currency",
-   "label": "Debit Amount"
-  },
-  {
-   "fieldname": "credit_currency",
-   "fieldtype": "Link",
-   "label": "Credit Currency",
-   "options": "Currency"
-  },
-  {
-   "fieldname": "debit_currency",
-   "fieldtype": "Link",
-   "label": "Debit Currency",
-   "options": "Currency"
-  },
-  {
    "fieldname": "amount",
    "fieldtype": "Currency",
    "in_list_view": 1,
-   "label": "Amount"
+   "label": "Amount",
+   "precision": "2"
   },
   {
    "fieldname": "company",
    "fieldtype": "Link",
-   "in_list_view": 1,
    "label": "Company",
    "options": "Company"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_credited",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Is Credited"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_debited",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Is Debited"
+  },
+  {
+   "fieldname": "account",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "options": "Currency"
+  },
+  {
+   "fieldname": "column_break_gihc",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "entry_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "ID"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-10-04 18:13:56.998015",
+ "modified": "2024-10-07 15:07:38.453791",
  "modified_by": "Administrator",
  "module": "Envision Finance",
  "name": "Transaction wise Budget Logs",

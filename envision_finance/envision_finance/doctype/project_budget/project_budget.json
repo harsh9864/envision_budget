@@ -46,7 +46,8 @@
   "transaction_logs_tab",
   "transactional_logs",
   "revenue_logs_tab",
-  "revenue_logs"
+  "revenue_logs",
+  "amended_from"
  ],
  "fields": [
   {
@@ -238,6 +239,7 @@
    "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "logs_tab",
    "fieldtype": "Tab Break",
    "label": "Expense Logs"
@@ -285,32 +287,46 @@
    "options": "Stop\nWarn"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "revenue_logs",
    "fieldtype": "Table",
    "label": "Revenue Logs",
    "options": "Item wise Budget Logs"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "revenue_logs_tab",
    "fieldtype": "Tab Break",
    "label": "Revenue Logs"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "transaction_logs_tab",
    "fieldtype": "Tab Break",
    "label": "Transaction Logs"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "transactional_logs",
    "fieldtype": "Table",
    "label": "Transactional Logs",
    "options": "Transaction wise Budget Logs"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Project Budget",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-10-04 18:26:50.008614",
+ "modified": "2024-10-07 14:36:03.256568",
  "modified_by": "Administrator",
  "module": "Envision Finance",
  "name": "Project Budget",

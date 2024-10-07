@@ -72,7 +72,7 @@ project: function (frm) {
 },
 
 before_save: function (frm) {
-    if(frm.doc.applicable_on_purchase_order == 0 && frm.doc.applicable_on_purchase_invoice == 0){
+    if(frm.doc.applicable_on_purchase_order == 0 && frm.doc.applicable_on_purchase_invoice == 0 && frm.doc.applicable_on_journal_entry == 0 && frm.doc.applicable_on_payroll_entry == 0){
         frappe.throw("Please select at least one of the Control Action/s");
     }
     else{
