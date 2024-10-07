@@ -132,6 +132,7 @@ app_license = "mit"
 override_doctype_class = {
     "Purchase Order": "envision_finance.public.overrides.purchase_order.PurchaseOrder",
     "Purchase Invoice": "envision_finance.public.overrides.purchase_invoice.PurchaseInvoice",
+    "Journal Entry": "envision_finance.public.overrides.journal_entry.JournalEntry",
 }
 
 # Document Events

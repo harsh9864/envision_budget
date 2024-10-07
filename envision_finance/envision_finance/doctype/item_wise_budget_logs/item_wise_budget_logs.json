@@ -29,14 +29,13 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Entry Type",
-   "options": "\nJournal Entry\nPurchase Order\nPurchase Invoice"
+   "options": "\nPurchase Order\nPurchase Invoice\nSales Order\nSales Invoice"
   },
   {
    "fieldname": "id",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "ID",
-   "options": "entry_type"
+   "label": "ID"
   },
   {
    "fieldname": "column_break_ju0r",
@@ -85,7 +84,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-09-27 11:52:09.865240",
+ "modified": "2024-10-04 18:25:35.162409",
  "modified_by": "Administrator",
  "module": "Envision Finance",
  "name": "Item wise Budget Logs",

@@ -1,0 +1,118 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-10-04 18:05:37.571213",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "document_details_section",
+  "column_break_uduq",
+  "entry_type",
+  "column_break_ffgz",
+  "entry_id",
+  "transaction_entry_details_section",
+  "column_break_zhpp",
+  "account",
+  "amount",
+  "currency",
+  "column_break_gihc",
+  "company",
+  "is_credited",
+  "is_debited"
+ ],
+ "fields": [
+  {
+   "fieldname": "document_details_section",
+   "fieldtype": "Section Break",
+   "label": "Document Details"
+  },
+  {
+   "fieldname": "column_break_uduq",
+   "fieldtype": "Column Break",
+   "options": "\nJournal Entry\nPayroll Entry"
+  },
+  {
+   "fieldname": "entry_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Entry Type",
+   "options": "\nJournal Entry\nPayroll Entry"
+  },
+  {
+   "fieldname": "column_break_ffgz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "transaction_entry_details_section",
+   "fieldtype": "Section Break",
+   "label": "Transaction Entry Details"
+  },
+  {
+   "fieldname": "column_break_zhpp",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Amount",
+   "precision": "2"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_credited",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Is Credited"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_debited",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Is Debited"
+  },
+  {
+   "fieldname": "account",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "options": "Currency"
+  },
+  {
+   "fieldname": "column_break_gihc",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "entry_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "ID"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-10-07 15:07:38.453791",
+ "modified_by": "Administrator",
+ "module": "Envision Finance",
+ "name": "Transaction wise Budget Logs",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
