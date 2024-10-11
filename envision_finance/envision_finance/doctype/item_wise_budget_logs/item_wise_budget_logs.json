@@ -29,7 +29,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Entry Type",
-   "options": "\nPurchase Order\nPurchase Invoice\nSales Order\nSales Invoice"
+   "options": "\nPurchase Order\nPurchase Invoice\nSales Invoice"
   },
   {
    "fieldname": "id",
@@ -84,7 +84,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-10-04 18:25:35.162409",
+ "modified": "2024-10-09 10:46:27.212678",
  "modified_by": "Administrator",
  "module": "Envision Finance",
  "name": "Item wise Budget Logs",
