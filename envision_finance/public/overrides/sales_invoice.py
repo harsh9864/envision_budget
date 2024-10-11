@@ -264,7 +264,6 @@ class SalesInvoice(SellingController):
     def validate(self):
         super().validate()
         self.validate_auto_set_posting_time()
-        print(f"""\n\n\n\n\n\n\n\nI am here \n\n\n\n\n""")
         if not (self.is_pos or self.is_debit_note):
             self.so_dn_required()
 
