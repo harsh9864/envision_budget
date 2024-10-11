@@ -246,7 +246,6 @@ override_doctype_dashboards = {
 
 fixtures = [
     "Custom DocPerm",
-    "Workspace",
     "Workflow State",
     "Workflow Action",
     "Workflow",

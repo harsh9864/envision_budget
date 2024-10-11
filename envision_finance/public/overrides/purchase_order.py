@@ -460,7 +460,8 @@ class PurchaseOrder(BuyingController):
     def on_submit(self):
         
         super().on_submit()
-        self.validate_item_wise_budget()
+        if self.custom_update_project_budget == 1:
+            self.validate_item_wise_budget()
         if self.is_against_so():
             self.update_status_updater()
 

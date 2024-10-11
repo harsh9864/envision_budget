@@ -54,3 +54,55 @@ def verifying_the_budgeted_items() -> Union[List[Dict[str, Any]],None]:
 	else:
 		frappe.response['data'] = None
 
+@frappe.whitelist()
+def setting_logs_in_new_budget():
+    new_budget = frappe.form_dict['new_budget']
+    old_budget = frappe.form_dict['old_budget']
+    
+    # Fetch both old and new budget documents
+    old_budget_data = frappe.get_doc("Project Budget", old_budget)
+    new_budget_data = frappe.get_doc("Project Budget", new_budget)
+    
+    # Copy transactional logs from old budget to new budget
+    for row in old_budget_data.transactional_logs:
+        new_budget_data.append('transactional_logs', {
+            'entry_type': row.entry_type,
+            'entry_id': row.entry_id,
+            'account': row.account,
+            'amount': row.amount,
+            'currency': row.currency,
+            'company': row.company,
+            'is_credited': row.is_credited,
+            'is_debited': row.is_debited,
+            'apply_budget_on': row.apply_budget_on,
+            'quantity': row.quantity,
+            'item': row.item,
+            'item_group': row.item_group,
+        })
+    
+    for row in old_budget_data.logs:
+        new_budget_data.append('logs', {
+            'entry_type': row.entry_type,
+            'id': row.id,
+            'item': row.item,
+            'rate': row.rate,
+            'quantity': row.quantity,
+            'amount': row.amount,
+            'uom': row.uom,
+        })
+        
+    for row in old_budget_data.revenue_logs:
+        new_budget_data.append('revenue_logs', {
+            'entry_type': row.entry_type,
+            'id': row.id,
+            'item': row.item,
+            'rate': row.rate,
+            'quantity': row.quantity,
+            'amount': row.amount,
+            'uom': row.uom,
+        })
+    # Save new budget document after appending rows
+    new_budget_data.save()
+    frappe.db.commit()
+    frappe.msgprint(f"All logs have been successfully copied from the {old_budget} to the {new_budget}.")
+

@@ -352,7 +352,7 @@
    "is_virtual": 0,
    "label": "Project Budget",
    "length": 0,
-   "link_filters": "[[\"Project Budget\",\"docstatus\",\"=\",\"1\"],[\"Project Budget\",\"workflow_state\",\"=\",\"Approved\"],[\"Project Budget\",\"disable\",\"=\",0]]",
+   "link_filters": "[[\"Project Budget\",\"workflow_state\",\"=\",\"Approved\"],[\"Project Budget\",\"disable\",\"=\",0]]",
    "mandatory_depends_on": null,
    "modified": "2024-10-07 12:57:36.503074",
    "modified_by": "Administrator",

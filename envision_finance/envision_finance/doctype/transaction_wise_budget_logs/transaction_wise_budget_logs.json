@@ -19,7 +19,13 @@
   "column_break_gihc",
   "company",
   "is_credited",
-  "is_debited"
+  "is_debited",
+  "section_break_ntdb",
+  "apply_budget_on",
+  "quantity",
+  "column_break_xqip",
+  "item",
+  "item_group"
  ],
  "fields": [
   {
@@ -37,7 +43,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Entry Type",
-   "options": "\nJournal Entry\nPayroll Entry"
+   "options": "\nJournal Entry"
   },
   {
    "fieldname": "column_break_ffgz",
@@ -101,12 +107,44 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "ID"
+  },
+  {
+   "fieldname": "section_break_ntdb",
+   "fieldtype": "Section Break"
+  },
+  {
+   "default": "Item",
+   "fieldname": "apply_budget_on",
+   "fieldtype": "Select",
+   "label": "Apply Budget On",
+   "options": "Item\nItem Group"
+  },
+  {
+   "fieldname": "quantity",
+   "fieldtype": "Int",
+   "label": "Quantity"
+  },
+  {
+   "fieldname": "column_break_xqip",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "item",
+   "fieldtype": "Link",
+   "label": "Item",
+   "options": "Item"
+  },
+  {
+   "fieldname": "item_group",
+   "fieldtype": "Link",
+   "label": "Item Group",
+   "options": "Item Group"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-10-07 15:07:38.453791",
+ "modified": "2024-10-09 10:53:56.321861",
  "modified_by": "Administrator",
  "module": "Envision Finance",
  "name": "Transaction wise Budget Logs",

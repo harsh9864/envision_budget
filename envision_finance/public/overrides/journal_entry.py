@@ -266,7 +266,12 @@ class JournalEntry(AccountsController):
                 'amount': account.debit_in_account_currency,
                 'currency': account.account_currency,
                 'is_debited': 1,
-                'is_credited': 0
+                'is_credited': 0,
+                'apply_budget_on': account.custom_apply_budget_on,
+                'quantity': account.custom_quantity,
+                'item': account.custom_item,
+                'item_group': account.custom_item_group
+                
             }
         elif key == "Credited":
             log_entry = {
@@ -276,7 +281,11 @@ class JournalEntry(AccountsController):
                 'amount': account.credit_in_account_currency,
                 'currency': account.account_currency,
                 'is_debited': 0,
-                'is_credited': 1
+                'is_credited': 1,
+                'apply_budget_on': account.custom_apply_budget_on,
+                'quantity': account.custom_quantity,
+                'item': account.custom_item,
+                'item_group': account.custom_item_group
             }
 
         # Append the log entry and save the project budget
