@@ -1,6 +1,8 @@
 frappe.ui.form.on("Project Budget", {
 
 refresh(frm) {
+
+    // Adding a Refresh Button
     frm.add_custom_button(__('<i class="fa fa-refresh"></i>'),function(){
         window.location.reload()
     });
