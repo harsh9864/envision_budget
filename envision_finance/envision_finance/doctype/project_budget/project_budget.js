@@ -1,6 +1,9 @@
 frappe.ui.form.on("Project Budget", {
 
 refresh(frm) {
+    frm.add_custom_button(__('<i class="fa fa-refresh"></i>'),function(){
+        window.location.reload()
+    });
     if (frm.doc.docstatus == 0) {
         // Add upload button for both grids
         addUploadButton(frm, "budgeted_items");
@@ -15,7 +18,7 @@ refresh(frm) {
     if (frm.doc.workflow_state == "Adjusted"){
         frappe.model.set_value("Project Budget",frm.doc.name,"disable",1)
     }
-    if (frm.doc.workflow_state == "Pending" && frm.doc.is_adjustment == 1){
+    if ((frm.doc.workflow_state == "Pending" || frm.doc.workflow_state == "Rework") && frm.doc.is_adjustment == 1){
         frm.add_custom_button(__("Get Logs"), function(){
             fetching_logs(frm.doc.name, frm.doc.budget_that_will_be_adjusted)
         })
@@ -45,6 +48,7 @@ onload: function(frm){
         };
     });
     frm.set_value("fiscal_year", erpnext.utils.get_fiscal_year(frappe.datetime.get_today()))
+    
 },
 
 project: function (frm) {
@@ -166,7 +170,6 @@ frappe.ui.form.on("Budget Items",{
 
     item: function(frm, cdt, cdn) {
         var row = locals[cdt][cdn];
-        console.log(row.apply_budget_on)
         if (frm.doc.project != null && frm.doc.department != null && row.item != null && frm.doc.fiscal_year != null) {
             if (row.apply_budget_on == "Item") {
                 frappe.call({
@@ -352,7 +355,7 @@ function populateChildTable(items, gridField) {
     // Refresh the child table to display the newly added rows
     frm.refresh_field(gridField);
 
-    frappe.msgprint(__('File data has been successfully loaded into the child table.'));
+    frappe.msgprint(_("The data has been successfully imported into the table."));
 }
 
 // Function to load SheetJS dynamically if not already loaded
@@ -368,8 +371,6 @@ function loadSheetJS(callback) {
 }
 
 function fetching_logs(new_budget, old_budget){
-    console.log("New Budget: ",new_budget);
-    console.log("Old Budget: ", old_budget);
     frappe.call({
         method: "envision_finance.envision_finance.doctype.project_budget.project_budget.setting_logs_in_new_budget",
         args:{
