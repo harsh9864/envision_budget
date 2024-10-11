@@ -43,7 +43,9 @@ app_license = "mit"
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
-# doctype_js = {"doctype" : "public/js/doctype.js"}
+doctype_js = {
+    "Sales Invoice": "public/js/sales_invoice.js"
+}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
@@ -133,6 +135,7 @@ override_doctype_class = {
     "Purchase Order": "envision_finance.public.overrides.purchase_order.PurchaseOrder",
     "Purchase Invoice": "envision_finance.public.overrides.purchase_invoice.PurchaseInvoice",
     "Journal Entry": "envision_finance.public.overrides.journal_entry.JournalEntry",
+    "Sales Invoice": "envision_finance.public.overrides.sales_invoice.SalesInvoice",
 }
 
 # Document Events
@@ -183,6 +186,7 @@ override_doctype_class = {
 # each overriding function accepts a `data` argument;
 # generated from the base implementation of the doctype dashboard,
 # along with any modifications made in other Frappe apps
+
 override_doctype_dashboards = {
 	"Project": "envision_finance.public.overrides.project_dashboard.get_data"
 }
@@ -250,5 +254,4 @@ fixtures = [
     "Workflow Action",
     "Workflow",
     "Role",
-    "Role Profile"
 ]
