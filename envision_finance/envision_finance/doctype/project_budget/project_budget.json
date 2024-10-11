@@ -15,6 +15,7 @@
   "column_break_yukv",
   "project",
   "project_name",
+  "cost_estimation",
   "disable",
   "will_be_adjusted",
   "is_adjustment",
@@ -366,12 +367,18 @@
    "label": "Purpose",
    "mandatory_depends_on": "eval:doc.is_adjustment == 1",
    "options": "\nBudget Extension\nBudget Internal Price Transfer"
+  },
+  {
+   "fieldname": "cost_estimation",
+   "fieldtype": "Link",
+   "label": "Cost Estimation",
+   "options": "Cost Estimation"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-10-11 13:01:13.807796",
+ "modified": "2024-10-11 17:31:54.504732",
  "modified_by": "Administrator",
  "module": "Envision Finance",
  "name": "Project Budget",

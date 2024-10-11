@@ -10,17 +10,17 @@ refresh(frm) {
         // Add upload button for both grids
         addUploadButton(frm, "budgeted_items");
         addUploadButton(frm, "timeline_details");
-
+        
         // Load SheetJS and add the download buttons for both grids
         loadSheetJS(function() {
-            addDownloadButton(frm, "budgeted_items");
-            addDownloadButton(frm, "timeline_details");
+            addDownloadTableDataButton(frm, "budgeted_items");
+        addDownloadTableDataButton(frm, "timeline_details");
         });
     }
     if (frm.doc.workflow_state == "Adjusted"){
         frappe.model.set_value("Project Budget",frm.doc.name,"disable",1)
     }
-    if ((frm.doc.workflow_state == "Pending" || frm.doc.workflow_state == "Rework") && frm.doc.is_adjustment == 1){
+    if ((["Pending", "Rework","Budget Review"].includes(frm.doc.workflow_state)) && frm.doc.is_adjustment == 1){
         frm.add_custom_button(__("Get Logs"), function(){
             fetching_logs(frm.doc.name, frm.doc.budget_that_will_be_adjusted)
         })
@@ -32,6 +32,13 @@ onload: function(frm){
         return {
             filters: {
                 "company": frm.doc.company
+            }
+        };
+    });
+    frm.set_query("cost_estimation", function() {
+        return {
+            filters: {
+                "department": frm.doc.department
             }
         };
     });
@@ -225,40 +232,6 @@ frappe.ui.form.on("Budget Items",{
     }
 });
 
-// Function to add download button
-function addDownloadButton(frm, gridField) {
-    frm.fields_dict[gridField].grid.add_custom_button(__('Download'), function() {
-        downloadXLSXTemplate(gridField);
-    });
-}
-
-// Function to download the appropriate XLSX template based on gridField
-function downloadXLSXTemplate(gridField) {
-    var headers;
-
-    // Define headers based on the grid field
-    if (gridField === "budgeted_items") {
-        headers = [
-            ['Apply Budget on', 'Item', 'HSN/SAC Code', 'Item Group', 'UOM', 'Quantity', 'Unit Price', 'Amount', 'Current Budget', 'Remaining Quantity']
-        ];
-    } else if (gridField === "timeline_details") {
-        headers = [
-            ['Apply Budget on', 'Item', 'Item Group', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December','Total Amount']
-        ];
-    }
-
-    // Create a new workbook and worksheet
-    var wb = XLSX.utils.book_new();
-    var ws = XLSX.utils.aoa_to_sheet(headers);
-
-    // Append the worksheet to the workbook
-    XLSX.utils.book_append_sheet(wb, ws, "Template");
-
-    // Download the XLSX file with dynamic file name based on gridField
-    var fileName = (gridField === "budgeted_items") ? "budgeted_items_template.xlsx" : "budgeted_timeline_template.xlsx";
-    XLSX.writeFile(wb, fileName);
-}
-
 // Function to add upload button
 function addUploadButton(frm, gridField) {
     frm.fields_dict[gridField].grid.add_custom_button(__('Upload'), function() {
@@ -372,6 +345,75 @@ function loadSheetJS(callback) {
     }
 }
 
+// Function to add download button for exporting table data
+function addDownloadTableDataButton(frm, gridField) {
+    frm.fields_dict[gridField].grid.add_custom_button(__('Download'), function() {
+        downloadTableDataXLSX(frm, gridField);
+    });
+}
+
+// Function to download table data as XLSX based on gridField
+function downloadTableDataXLSX(frm, gridField) {
+    var headers, data = [];
+
+    // Define headers and collect data based on the grid field
+    if (gridField === "budgeted_items") {
+        headers = [
+            ['Apply Budget on', 'Item', 'HSN/SAC Code', 'Item Group', 'UOM', 'Quantity', 'Unit Price', 'Amount', 'Current Budget', 'Remaining Quantity']
+        ];
+        
+        frm.doc.budgeted_items.forEach(function(row) {
+            data.push([
+                row.apply_budget_on,
+                row.item,
+                row.hsn_sac_code,
+                row.item_group,
+                row.uom,
+                row.quantity,
+                row.unit_price,
+                row.amount,
+                row.current_budget,
+                row.remaining_quantity
+            ]);
+        });
+    } else if (gridField === "timeline_details") {
+        headers = [
+            ['Apply Budget on', 'Item', 'Item Group', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December','Total Amount']
+        ];
+        
+        frm.doc.timeline_details.forEach(function(row) {
+            data.push([
+                row.apply_budget_on,
+                row.item,
+                row.item_group,
+                row.january,
+                row.february,
+                row.march,
+                row.april,
+                row.may,
+                row.june,
+                row.july,
+                row.august,
+                row.september,
+                row.october,
+                row.november,
+                row.december,
+                row.total_amount
+            ]);
+        });
+    }
+
+    // Create a new workbook and worksheet
+    var wb = XLSX.utils.book_new();
+    var ws = XLSX.utils.aoa_to_sheet(headers.concat(data));
+
+    // Append the worksheet to the workbook
+    XLSX.utils.book_append_sheet(wb, ws, "Table Data");
+
+    // Download the XLSX file with a dynamic file name based on gridField
+    var fileName = (gridField === "budgeted_items") ? "budgeted_items_data.xlsx" : "budgeted_timeline_data.xlsx";
+    XLSX.writeFile(wb, fileName);
+}
 function fetching_logs(new_budget, old_budget){
     frappe.call({
         method: "envision_finance.envision_finance.doctype.project_budget.project_budget.setting_logs_in_new_budget",
