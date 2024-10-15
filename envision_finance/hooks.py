@@ -251,5 +251,4 @@ fixtures = [
     "Workflow Action",
     "Workflow",
     "Role",
-    "Role Profile"
 ]
