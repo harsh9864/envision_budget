@@ -249,6 +249,10 @@ fixtures = [
     "Custom DocPerm",
     "Workflow State",
     "Workflow Action",
-    "Workflow",
     "Role",
+    {"dt":"Workflow","filters":[
+        [
+        "name","=","Project Budget Approval Workflow"
+        ]
+    ]},
 ]
