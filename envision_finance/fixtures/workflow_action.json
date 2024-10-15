@@ -1491,8 +1491,8 @@
   "workflow_state": "Approved"
  },
  {
-  "completed_by": null,
-  "completed_by_role": null,
+  "completed_by": "Administrator",
+  "completed_by_role": "Budget User",
   "docstatus": 0,
   "doctype": "Workflow Action",
   "modified": "2024-10-15 18:31:46.614098",
@@ -1507,8 +1507,71 @@
   ],
   "reference_doctype": "Project Budget",
   "reference_name": "PBPROJ-0001-006",
-  "status": "Open",
+  "status": "Completed",
   "user": null,
   "workflow_state": "Pending"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "Budget Manager",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2024-10-15 19:15:28.658703",
+  "name": "0stm85kajp",
+  "permitted_roles": [
+   {
+    "parent": "0stm85kajp",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "Budget Manager"
+   }
+  ],
+  "reference_doctype": "Project Budget",
+  "reference_name": "PBPROJ-0001-006",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Budget Review"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "System Manager",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2024-10-15 19:15:29.797628",
+  "name": "0su2mnaka4",
+  "permitted_roles": [
+   {
+    "parent": "0su2mnaka4",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "System Manager"
+   }
+  ],
+  "reference_doctype": "Project Budget",
+  "reference_name": "PBPROJ-0001-006",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Director Review"
+ },
+ {
+  "completed_by": null,
+  "completed_by_role": null,
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2024-10-15 19:15:30.779228",
+  "name": "0sub0j6ajp",
+  "permitted_roles": [
+   {
+    "parent": "0sub0j6ajp",
+    "parentfield": "permitted_roles",
+    "parenttype": "Workflow Action",
+    "role": "System Manager"
+   }
+  ],
+  "reference_doctype": "Project Budget",
+  "reference_name": "PBPROJ-0001-006",
+  "status": "Open",
+  "user": null,
+  "workflow_state": "Approved"
  }
 ]
