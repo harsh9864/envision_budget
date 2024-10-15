@@ -13,7 +13,9 @@ refresh(frm) {
         });
     }
     if (frm.doc.workflow_state == "Adjusted"){
-        frappe.model.set_value("Project Budget",frm.doc.name,"disable",1)
+        frappe.model.set_value("Project Budget",frm.doc.name,"disable",1);
+        frappe.model.set_value("Project Budget",frm.doc.name,"will_be_adjusted",1);
+        cur_frm.doc.save()
     }
     if (frm.doc.workflow_state == "Pending" && frm.doc.is_adjustment == 1){
         frm.add_custom_button(__("Get Logs"), function(){
