@@ -71,8 +71,59 @@ class PaymentEntry(AccountsController):
             self.party_account = self.paid_to
             self.party_account_currency = self.paid_to_account_currency
 
-    def validate(self):
+    def update_the_budget(self):
+        for reference in self.references:
+            if reference.custom_update_project_budget and reference.reference_doctype == "Sales Invoice":
+                
+                self.inserting_revenue_logs(budget = reference.custom_project_budget,sales_invoice_id = reference.reference_name,payment_amount = reference.allocated_amount,payment_id = self.name)
+            else: 
+                print(f"\n\n\n1\n\n\n")
+
+    def update_budget_on_cancellation(self):
+        for reference in self.references:
+            if reference.custom_update_project_budget and reference.reference_doctype == "Sales Invoice":
+                self.remove_revenue_logs(budget=reference.custom_project_budget, payment_id=self.name)
+
+    
+    def inserting_revenue_logs(self, budget, sales_invoice_id, payment_amount, payment_id):
+        print(f"\nCalling from the function\n\n{budget}\n{sales_invoice_id}\n{payment_amount}\n{payment_id}\n")
         
+        # Fetch the budget document
+        budget_doc = frappe.get_doc("Project Budget", budget)
+
+        # Create a new row for the child table
+        revenue_log = {
+            "entry_type":"Payment Entry",
+            "allocated_amount": payment_amount,
+            "entry_id": payment_id,
+            "sales_invoice_id": sales_invoice_id,
+        }
+
+        # Append the new row to the child table (replace 'revenue_logs' with the correct fieldname)
+        budget_doc.append('revenue_logs', revenue_log)
+
+        # Save the budget document to persist changes
+        budget_doc.save()
+
+        frappe.db.commit()  # Ensure that changes are committed to the database
+
+    def remove_revenue_logs(self, budget, payment_id):
+        # Fetch the budget document
+        budget_doc = frappe.get_doc("Project Budget", budget)
+
+        # Filter the logs in the child table to find the ones related to this payment entry
+        logs_to_remove = [log for log in budget_doc.revenue_logs if log.entry_id == payment_id]
+
+        # Remove the found logs
+        for log in logs_to_remove:
+            budget_doc.remove(log)
+
+        # Save the document after removing logs
+        budget_doc.save()
+
+        frappe.db.commit()  # Commit the changes to the database
+    
+    def validate(self):
         self.setup_party_account_field()
         self.set_missing_values()
         self.set_liability_account()
@@ -103,6 +154,7 @@ class PaymentEntry(AccountsController):
         if self.difference_amount:
             frappe.throw(_("Difference Amount must be zero"))
         self.make_gl_entries()
+        self.update_the_budget()
         self.update_outstanding_amounts()
         self.update_advance_paid()
         self.update_payment_schedule()
@@ -177,16 +229,20 @@ class PaymentEntry(AccountsController):
         super().on_cancel()
         self.make_gl_entries(cancel=1)
         self.update_outstanding_amounts()
-        self.update_advance_paid()
         self.delink_advance_entry_references()
         self.update_payment_schedule(cancel=1)
-        self.set_payment_req_status()
+        self.update_payment_requests(cancel=True)
+        self.update_advance_paid()  # advance_paid_status depends on the payment request amount
         self.set_status()
+        self.update_budget_on_cancellation()
 
-    def set_payment_req_status(self):
-        from erpnext.accounts.doctype.payment_request.payment_request import update_payment_req_status
+    def update_payment_requests(self, cancel=False):
+        from erpnext.accounts.doctype.payment_request.payment_request import (
+			update_payment_requests_as_per_pe_references,
+		)
 
-        update_payment_req_status(self, None)
+        update_payment_requests_as_per_pe_references(self.references, cancel=cancel)
+
 
     def update_outstanding_amounts(self):
         self.set_missing_ref_details(force=True)
