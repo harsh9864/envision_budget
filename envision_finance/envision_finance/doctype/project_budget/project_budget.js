@@ -1,6 +1,11 @@
 frappe.ui.form.on("Project Budget", {
 
 refresh(frm) {
+    frm.add_custom_button(__('<i class="fa fa-refresh"></i>'), 
+        function() {
+            window.location.reload();
+        }, 
+    );
     if (frm.doc.docstatus == 0) {
         // Add upload button for both grids
         addUploadButton(frm, "budgeted_items");

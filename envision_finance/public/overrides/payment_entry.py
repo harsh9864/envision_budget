@@ -76,8 +76,7 @@ class PaymentEntry(AccountsController):
             if reference.custom_update_project_budget and reference.reference_doctype == "Sales Invoice":
                 
                 self.inserting_revenue_logs(budget = reference.custom_project_budget,sales_invoice_id = reference.reference_name,payment_amount = reference.allocated_amount,payment_id = self.name)
-            else: 
-                print(f"\n\n\n1\n\n\n")
+
 
     def update_budget_on_cancellation(self):
         for reference in self.references:
@@ -86,7 +85,6 @@ class PaymentEntry(AccountsController):
 
     
     def inserting_revenue_logs(self, budget, sales_invoice_id, payment_amount, payment_id):
-        print(f"\nCalling from the function\n\n{budget}\n{sales_invoice_id}\n{payment_amount}\n{payment_id}\n")
         
         # Fetch the budget document
         budget_doc = frappe.get_doc("Project Budget", budget)
