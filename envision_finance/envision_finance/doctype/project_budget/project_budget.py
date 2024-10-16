@@ -78,8 +78,11 @@ def setting_logs_in_new_budget():
             'quantity': row.quantity,
             'item': row.item,
             'item_group': row.item_group,
+            'is_adjusted_budget':1,
+            'project_budget':old_budget,
         })
-    
+        
+    # Copy Expense logs from old budget to new budget
     for row in old_budget_data.logs:
         new_budget_data.append('logs', {
             'entry_type': row.entry_type,
@@ -89,17 +92,19 @@ def setting_logs_in_new_budget():
             'quantity': row.quantity,
             'amount': row.amount,
             'uom': row.uom,
+            'is_adjusted_budget':1,
+            'project_budget':old_budget,
         })
         
+    # Copy Revenue logs from old budget to new budget
     for row in old_budget_data.revenue_logs:
         new_budget_data.append('revenue_logs', {
             'entry_type': row.entry_type,
-            'id': row.id,
-            'item': row.item,
-            'rate': row.rate,
-            'quantity': row.quantity,
-            'amount': row.amount,
-            'uom': row.uom,
+            'entry_id': row.entry_id,
+            'allocated_amount': row.allocated_amount,
+            'sales_invoice_id': row.sales_invoice_id,
+            'is_adjusted_budget':1,
+            'project_budget':old_budget,
         })
     # Save new budget document after appending rows
     new_budget_data.save()

@@ -295,59 +295,73 @@ class JournalEntry(AccountsController):
 
     
     def updating_budget_on_cancellation(self):
-        for account in self.accounts:
-            if account.custom_update_project_budget_:
-                self.removing_logs(account)
+        # Step 1: Get the budget names associated with the journal entry
+        budgets = frappe.db.sql("""
+            SELECT DISTINCT(PB.name) AS budget_name
+            FROM 
+                `tabTransaction wise Budget Logs` AS IBL
+            INNER JOIN 
+                `tabProject Budget` AS PB
+            ON 
+                PB.name = IBL.parent
+            WHERE 
+                IBL.entry_id = %s
+        """, (self.name,), as_dict=True)
 
-    def removing_logs(self, account):
-        project_budget = frappe.get_doc('Project Budget', account.custom_project_budget)
-        debit = account.debit_in_account_currency
-        credit = account.credit_in_account_currency
-        qty = account.custom_quantity
+        # Step 2: Iterate over each budget name and call the removing_logs function
+        for budget in budgets:
+            project_budget_name = budget.budget_name
+            project_budget = frappe.get_doc('Project Budget', project_budget_name)
+            for transactional_log in project_budget.transactional_logs:
+                if transactional_log.entry_type == "Journal Entry" and transactional_log.entry_id == self.name:
+                    self.removing_logs(transactional_log = transactional_log,project_budget_name = project_budget_name,entry_id = self.name)
+    
+    def removing_logs(self, transactional_log, project_budget_name, entry_id):
+        # Load the Project Budget document
+        project_budget = frappe.get_doc('Project Budget', project_budget_name)
+
+        # Retrieve the relevant account information from the transactional log
+        item_code = transactional_log.item  
+        qty = transactional_log.quantity  
+        amount = transactional_log.amount 
         item_found = False  # Track whether the item/group was found in the budgeted items
 
-        # Update the budgeted items
-        for i in project_budget.budgeted_items:
-            if (i.item == account.custom_item and account.custom_apply_budget_on == i.apply_budget_on == "Item") or (i.item == account.custom_item_group and account.custom_apply_budget_on == i.apply_budget_on == "Item Group"):
+        # Update the budgeted items for the given project budget
+        for budget_item in project_budget.budgeted_items:
+            if (budget_item.item == item_code and transactional_log.apply_budget_on == "Item") or (budget_item.item_group == item_code and transactional_log.apply_budget_on == "Item Group"):
                 item_found = True
-
-                if debit > 0:
-                    result = i.current_budget + debit
-                    remaining_quantity = i.remaining_quantity + qty
-
-                elif credit > 0:
-                    result = i.current_budget + credit
-                    remaining_quantity = i.remaining_quantity + qty
+                new_current_budget = budget_item.current_budget + amount
+                new_remaining_quantity = budget_item.remaining_quantity + qty
 
                 # Update the current budget and remaining quantity for the matched item/group
-                frappe.db.set_value("Budget Items", i.name, {
-                    "current_budget": result,
-                    "remaining_quantity": remaining_quantity
+                frappe.db.set_value("Budget Items", budget_item.name, {
+                    "current_budget": new_current_budget,
+                    "remaining_quantity": new_remaining_quantity
                 })
 
-                # Commit the changes to the database and reload the document
+                # Commit the changes to the database
                 frappe.db.commit()
                 project_budget.reload()
-                break  # Exit loop after updating the relevant budget item
+                break  # Exit the loop after updating the relevant budget item
 
         if not item_found:
-            frappe.throw(f"No matching item or item group found in the project budget for {account.custom_item or account.custom_item_group}")
+            frappe.throw(f"No matching item or item group found in the project budget for item code: {item_code}")
 
-        # Remove the corresponding log from transactional_logs
+        # Now remove the corresponding log from the transactional_logs
         log_found = False
         for log in project_budget.transactional_logs:
-            if account.parent == log.entry_id:
-                # Use remove with the correct child table field name
+            if log.entry_id == entry_id:
                 project_budget.remove(log)
                 log_found = True
                 break
 
         if log_found:
+            # Save and commit the changes to the project budget
             project_budget.save()
             frappe.db.commit()
             project_budget.reload()
         else:
-            frappe.throw(f"No log found for Journal Entry: {account.parent}")
+            frappe.throw(f"No log found for Entry ID: {transactional_log.entry_id}")
 
     def validate_advance_accounts(self):
         journal_accounts = set([x.account for x in self.accounts])

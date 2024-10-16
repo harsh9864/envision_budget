@@ -519,61 +519,76 @@ class PurchaseOrder(BuyingController):
         unlink_inter_company_doc(self.doctype, self.name, self.inter_company_order_reference)
 
     def updating_the_budget_data_after_cancellation(self):
-        company = self.company
-        project = self.project
-        department = self.department
-        for item in self.items:
-            budget_all_data = self.budget_data(project,company,department)
-            for budget in budget_all_data:
-                if budget.item == item.item_code:
-                    self.updating_budget_on_cancellation(budget.get('name'),item.item_code,item.amount,self.doctype,self.name,item.qty)
-                elif budget.item == item.item_group:
-                    self.updating_budget_on_cancellation(budget.get('name'),item.item_group,item.amount,self.doctype,self.name,item.qty)
-    def updating_budget_on_cancellation(self, budget, item_code, amount, doctype, name, qty):
-        document = frappe.get_doc("Project Budget", budget)
-        
-        # Flag to check if the item was found and updated
-        item_found = False
-        
-        # Entering the loop to update the budget of the respective item
-        for i in document.budgeted_items:
-            if i.item == item_code:
+        # Step 1: Get the budget names associated with the Purchase Order
+        budgets = frappe.db.sql("""
+                SELECT
+                    DISTINCT(PB.name) AS "budget_name"
+                FROM 
+                    `tabItem wise Budget Logs` AS IBL
+                INNER JOIN 
+                    `tabProject Budget` AS PB
+                ON 
+                    PB.name = IBL.parent
+                WHERE  IBL.id = %s
+                """,(self.name,),as_dict=True)
+
+        # Step 2: Iterate over each budget name and call the removing_logs function
+        for budget in budgets:
+            project_budget_name = budget.budget_name
+            project_budget = frappe.get_doc('Project Budget', project_budget_name)
+            for log in project_budget.logs:
+                if log.entry_type == "Purchase Order" and log.id == self.name:
+                    self.removing_logs(log = log,project_budget_name = project_budget_name,entry_id = self.name)
+    
+    def removing_logs(self, log, project_budget_name, entry_id):
+        # Load the Project Budget document
+        project_budget = frappe.get_doc('Project Budget', project_budget_name)
+
+        # Retrieve the relevant account information from the expense log
+        item_code = log.item  
+        qty = log.quantity  
+        amount = log.amount 
+        item_found = False  # Track whether the item/group was found in the budgeted items
+
+        # Update the budgeted items for the given project budget
+        for budget_item in project_budget.budgeted_items:
+            if (budget_item.item == item_code) or (budget_item.item_group == item_code):
                 item_found = True
-                
-                # Calculating the new budget and remaining quantity
-                result = i.current_budget + amount
-                remaining_quantity = i.remaining_quantity + qty
-                if result > i.amount:
-                    result = i.amount
-                if remaining_quantity > i.quantity:
-                    remaining_quantity = i.quantity
-                # Updating the current_budget and remaining_quantity in Budget Items
-                frappe.db.set_value("Budget Items", i.name, {
-                    "current_budget": result,
-                    "remaining_quantity": remaining_quantity
+                new_current_budget = budget_item.current_budget + amount
+                new_remaining_quantity = budget_item.remaining_quantity + qty
+
+                # Update the current budget and remaining quantity for the matched item/group
+                frappe.db.set_value("Budget Items", budget_item.name, {
+                    "current_budget": new_current_budget,
+                    "remaining_quantity": new_remaining_quantity
                 })
-                
+
                 # Commit the changes to the database
                 frappe.db.commit()
-                
-                # Reload the document to reflect the changes
-                document.reload()
+                project_budget.reload()
+                break  # Exit the loop after updating the relevant budget item
+
+        if not item_found:
+            frappe.throw(f"No matching item or item group found in the project budget for item code: {item_code}")
+
+        # Now remove the corresponding log from the expense logs
+        log_found = False
+        for project_log in project_budget.logs:
+            if project_log.id == log.id:  # Ensure we match the log by id
+                project_budget.remove(project_log)
+                log_found = True
                 break
-        if item_found:
-        # Entering the loop to check for matching id and name in the logs table
-            for log in document.logs:
-                if log.item == item_code and log.id == name and log.entry_type == doctype:
-                    # Removing the matching row from the logs table
-                    document.remove(log)
-                    
-                    # Save and commit the changes
-                    document.save()
-                    frappe.db.commit()
-                    # Reload the document to reflect the removal
-                    document.reload()
-                    break
-        
+
+        if log_found:
+            # Save and commit the changes to the project budget
+            project_budget.save()
+            frappe.db.commit()
+            project_budget.reload()
+        else:
+            frappe.throw(f"No log found for Entry ID: {log.id}")
+    
     def on_update(self):
+        
         pass
 
     def update_status_updater(self):

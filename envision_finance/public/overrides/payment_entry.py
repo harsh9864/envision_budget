@@ -77,12 +77,6 @@ class PaymentEntry(AccountsController):
                 
                 self.inserting_revenue_logs(budget = reference.custom_project_budget,sales_invoice_id = reference.reference_name,payment_amount = reference.allocated_amount,payment_id = self.name)
 
-
-    def update_budget_on_cancellation(self):
-        for reference in self.references:
-            if reference.custom_update_project_budget and reference.reference_doctype == "Sales Invoice":
-                self.remove_revenue_logs(budget=reference.custom_project_budget, payment_id=self.name)
-
     
     def inserting_revenue_logs(self, budget, sales_invoice_id, payment_amount, payment_id):
         
@@ -105,11 +99,39 @@ class PaymentEntry(AccountsController):
 
         frappe.db.commit()  # Ensure that changes are committed to the database
 
-    def remove_revenue_logs(self, budget, payment_id):
-        # Fetch the budget document
-        budget_doc = frappe.get_doc("Project Budget", budget)
+        
+    def update_budget_on_cancellation(self):
+    # Iterate over references to check for custom update conditions
+        for reference in self.references:
+            if reference.custom_update_project_budget and reference.reference_doctype == "Sales Invoice":
+                # Call the method to remove logs for the project budget and payment ID
+                self.remove_revenue_logs_for_entry(project_budget=reference.custom_project_budget, payment_id=self.name)
 
-        # Filter the logs in the child table to find the ones related to this payment entry
+    def remove_revenue_logs_for_entry(self, project_budget, payment_id):
+        
+        related_budgets = frappe.db.sql("""
+        SELECT 
+            PB.name 
+        FROM 
+            `tabRevenue wise Budget Logs` AS RBL
+        INNER JOIN 
+            `tabProject Budget` AS PB
+        ON 
+            PB.name = RBL.parent
+        WHERE 
+            RBL.entry_id = %s
+    """, (payment_id), as_dict=True)
+
+        # Remove logs from each related budget (PB.name)
+        for row in related_budgets:
+            pb_name = row.get("name")
+            self.remove_logs_from_budget(pb_name, payment_id)
+
+    def remove_logs_from_budget(self, budget_name, payment_id):
+        # Fetch the budget document (Project Budget)
+        budget_doc = frappe.get_doc("Project Budget", budget_name)
+
+        # Filter the logs in the child table to find the ones related to the payment entry
         logs_to_remove = [log for log in budget_doc.revenue_logs if log.entry_id == payment_id]
 
         # Remove the found logs
@@ -119,8 +141,9 @@ class PaymentEntry(AccountsController):
         # Save the document after removing logs
         budget_doc.save()
 
-        frappe.db.commit()  # Commit the changes to the database
-    
+        # Commit the changes to the database
+        frappe.db.commit()
+        
     def validate(self):
         self.setup_party_account_field()
         self.set_missing_values()
