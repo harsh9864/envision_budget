@@ -8,6 +8,7 @@
  "field_order": [
   "document_details_section",
   "entry_type",
+  "is_adjusted_budget",
   "column_break_ju0r",
   "id",
   "item_details_section",
@@ -16,7 +17,9 @@
   "uom",
   "column_break_gnvm",
   "rate",
-  "amount"
+  "amount",
+  "adjustment_details_section",
+  "project_budget"
  ],
  "fields": [
   {
@@ -79,12 +82,32 @@
    "fieldtype": "Float",
    "label": "Rate",
    "precision": "2"
+  },
+  {
+   "depends_on": "eval:doc.is_adjusted_budget",
+   "fieldname": "adjustment_details_section",
+   "fieldtype": "Section Break",
+   "label": "Adjustment Details"
+  },
+  {
+   "depends_on": "eval:doc.is_adjusted_budget",
+   "fieldname": "project_budget",
+   "fieldtype": "Link",
+   "label": "Project Budget",
+   "mandatory_depends_on": "eval:doc.is_adjusted_budget",
+   "options": "Project Budget"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_adjusted_budget",
+   "fieldtype": "Check",
+   "label": "Is Adjusted"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-10-09 10:46:27.212678",
+ "modified": "2024-10-16 12:21:33.188000",
  "modified_by": "Administrator",
  "module": "Envision Finance",
  "name": "Item wise Budget Logs",

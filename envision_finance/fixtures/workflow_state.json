@@ -3,15 +3,6 @@
   "docstatus": 0,
   "doctype": "Workflow State",
   "icon": "",
-  "modified": "2024-10-09 19:37:16.737259",
-  "name": "Adjusted",
-  "style": "Inverse",
-  "workflow_state_name": "Adjusted"
- },
- {
-  "docstatus": 0,
-  "doctype": "Workflow State",
-  "icon": "",
   "modified": "2024-10-01 15:34:22.955254",
   "name": "Rejected",
   "style": "Danger",
@@ -25,15 +16,6 @@
   "name": "Rework",
   "style": "Warning",
   "workflow_state_name": "Rework"
- },
- {
-  "docstatus": 0,
-  "doctype": "Workflow State",
-  "icon": "",
-  "modified": "2024-10-09 19:28:02.249596",
-  "name": "Pending",
-  "style": "Info",
-  "workflow_state_name": "Pending"
  },
  {
   "docstatus": 0,
@@ -61,5 +43,23 @@
   "name": "Approved",
   "style": "Success",
   "workflow_state_name": "Approved"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": "",
+  "modified": "2024-10-09 19:37:16.737259",
+  "name": "Adjusted",
+  "style": "Inverse",
+  "workflow_state_name": "Adjusted"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": "",
+  "modified": "2024-10-09 19:28:02.249596",
+  "name": "Pending",
+  "style": "Info",
+  "workflow_state_name": "Pending"
  }
 ]
