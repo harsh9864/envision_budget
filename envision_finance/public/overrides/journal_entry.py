@@ -306,7 +306,7 @@ class JournalEntry(AccountsController):
                 PB.name = IBL.parent
             WHERE 
                 IBL.entry_id = %s
-        """, (self.name,), as_dict=True)
+        """, (self.name), as_dict=True)
 
         # Step 2: Iterate over each budget name and call the removing_logs function
         for budget in budgets:
@@ -328,7 +328,7 @@ class JournalEntry(AccountsController):
 
         # Update the budgeted items for the given project budget
         for budget_item in project_budget.budgeted_items:
-            if (budget_item.item == item_code and transactional_log.apply_budget_on == "Item") or (budget_item.item_group == item_code and transactional_log.apply_budget_on == "Item Group"):
+            if (budget_item.item == item_code and transactional_log.apply_budget_on == "Item") or (budget_item.item == item_code and transactional_log.apply_budget_on == "Item Group"):
                 item_found = True
                 new_current_budget = budget_item.current_budget + amount
                 new_remaining_quantity = budget_item.remaining_quantity + qty
