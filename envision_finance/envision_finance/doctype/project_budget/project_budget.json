@@ -15,8 +15,13 @@
   "column_break_yukv",
   "project",
   "project_name",
-  "quotation",
   "disable",
+  "will_be_adjusted",
+  "is_adjustment",
+  "budget_adjustments_section",
+  "budget_that_will_be_adjusted",
+  "column_break_plbs",
+  "purpose",
   "control_action_section",
   "column_break_mknp",
   "applicable_on_purchase_order",
@@ -24,8 +29,13 @@
   "column_break_ohik",
   "applicable_on_purchase_invoice",
   "action_if_annual_budget_exceeded_on_pi",
+  "column_break_qlxu",
+  "applicable_on_journal_entry",
+  "action_if_annual_budget_exceeded_on_journal_entry",
   "section_break_ytbv",
   "budgeted_items",
+  "budget_timeline_section",
+  "timeline_details",
   "budget_summary_section",
   "stable_items_count",
   "fluctuating_items_count",
@@ -39,6 +49,10 @@
   "remarks",
   "logs_tab",
   "logs",
+  "transaction_logs_tab",
+  "transactional_logs",
+  "revenue_logs_tab",
+  "revenue_logs",
   "amended_from"
  ],
  "fields": [
@@ -81,18 +95,13 @@
    "default": "0",
    "fieldname": "disable",
    "fieldtype": "Check",
-   "label": "Disable"
-  },
-  {
-   "fieldname": "quotation",
-   "fieldtype": "Link",
-   "label": "Quotation",
-   "options": "Quotation"
+   "label": "Disable",
+   "permlevel": 1
   },
   {
    "fieldname": "control_action_section",
    "fieldtype": "Section Break",
-   "label": "Control Action"
+   "label": "Control Actions"
   },
   {
    "fieldname": "column_break_mknp",
@@ -231,23 +240,68 @@
    "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "logs_tab",
    "fieldtype": "Tab Break",
-   "label": "Logs"
+   "label": "Expense Logs"
   },
   {
    "allow_on_submit": 1,
    "fieldname": "logs",
    "fieldtype": "Table",
-   "label": "Logs",
+   "label": "Expense Logs",
    "options": "Item wise Budget Logs",
    "read_only": 1
   },
   {
+   "default": "PB.project.-.###",
    "fieldname": "naming_series",
    "fieldtype": "Select",
    "label": "Naming Series",
-   "options": "PB.####"
+   "options": "PB.project.-.###\nPB.####"
+  },
+  {
+   "default": "0",
+   "fieldname": "applicable_on_journal_entry",
+   "fieldtype": "Check",
+   "label": "Applicable on Journal Entry"
+  },
+  {
+   "default": "Warn",
+   "depends_on": "eval:doc.applicable_on_journal_entry",
+   "fieldname": "action_if_annual_budget_exceeded_on_journal_entry",
+   "fieldtype": "Select",
+   "label": "Action if Annual Budget Exceeded on Journal Entry",
+   "mandatory_depends_on": "eval:doc.applicable_on_journal_entry",
+   "options": "Stop\nWarn"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "revenue_logs",
+   "fieldtype": "Table",
+   "label": "Revenue Logs",
+   "options": "Revenue wise Budget Logs",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "revenue_logs_tab",
+   "fieldtype": "Tab Break",
+   "label": "Revenue Logs"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "transaction_logs_tab",
+   "fieldtype": "Tab Break",
+   "label": "Transaction Logs"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "transactional_logs",
+   "fieldtype": "Table",
+   "label": "Transactional Logs",
+   "options": "Transaction wise Budget Logs",
+   "read_only": 1
   },
   {
    "fieldname": "amended_from",
@@ -258,12 +312,68 @@
    "print_hide": 1,
    "read_only": 1,
    "search_index": 1
+  },
+  {
+   "fieldname": "budget_timeline_section",
+   "fieldtype": "Section Break",
+   "label": "Budget Timeline "
+  },
+  {
+   "fieldname": "timeline_details",
+   "fieldtype": "Table",
+   "label": "Timeline Details",
+   "options": "Item wise Budgeted  Timeline"
+  },
+  {
+   "fieldname": "column_break_qlxu",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "0",
+   "fieldname": "will_be_adjusted",
+   "fieldtype": "Check",
+   "label": "Will be Adjusted",
+   "permlevel": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "is_adjustment",
+   "fieldtype": "Check",
+   "label": "Is Adjustment"
+  },
+  {
+   "depends_on": "eval:doc.is_adjustment == 1",
+   "fieldname": "budget_adjustments_section",
+   "fieldtype": "Section Break",
+   "label": "Budget Adjustments"
+  },
+  {
+   "depends_on": "eval:doc.is_adjustment == 1",
+   "fieldname": "budget_that_will_be_adjusted",
+   "fieldtype": "Link",
+   "label": "Budget that will be adjusted",
+   "link_filters": "[[\"Project Budget\",\"will_be_adjusted\",\"=\",1]]",
+   "mandatory_depends_on": "eval:doc.is_adjustment == 1",
+   "options": "Project Budget"
+  },
+  {
+   "fieldname": "column_break_plbs",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.is_adjustment == 1",
+   "fieldname": "purpose",
+   "fieldtype": "Select",
+   "label": "Purpose",
+   "mandatory_depends_on": "eval:doc.is_adjustment == 1",
+   "options": "\nBudget Extension\nBudget Internal Price Transfer"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-10-01 12:39:12.523788",
+ "modified": "2024-10-15 19:00:51.942527",
  "modified_by": "Administrator",
  "module": "Envision Finance",
  "name": "Project Budget",
@@ -281,6 +391,20 @@
    "read": 1,
    "report": 1,
    "role": "System Manager",
+   "select": 1,
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Budget Manager",
    "select": 1,
    "share": 1,
    "submit": 1,
