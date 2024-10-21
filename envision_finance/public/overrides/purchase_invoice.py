@@ -1721,7 +1721,7 @@ class PurchaseInvoice(BuyingController):
 
         # Update the budgeted items for the given project budget
         for budget_item in project_budget.budgeted_items:
-            if (budget_item.item == item_code) or (budget_item.item_group == item_code):
+            if (budget_item.item == item_code):
                 item_found = True
                 new_current_budget = budget_item.current_budget + amount
                 new_remaining_quantity = budget_item.remaining_quantity + qty

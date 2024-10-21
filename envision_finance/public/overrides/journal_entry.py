@@ -322,13 +322,14 @@ class JournalEntry(AccountsController):
 
         # Retrieve the relevant account information from the transactional log
         item_code = transactional_log.item  
+        item_group= transactional_log.item_group
         qty = transactional_log.quantity  
         amount = transactional_log.amount 
         item_found = False  # Track whether the item/group was found in the budgeted items
 
         # Update the budgeted items for the given project budget
         for budget_item in project_budget.budgeted_items:
-            if (budget_item.item == item_code and transactional_log.apply_budget_on == "Item") or (budget_item.item == item_code and transactional_log.apply_budget_on == "Item Group"):
+            if (budget_item.item == item_code and transactional_log.apply_budget_on == "Item") or (budget_item.item == item_group and transactional_log.apply_budget_on == "Item Group"):
                 item_found = True
                 new_current_budget = budget_item.current_budget + amount
                 new_remaining_quantity = budget_item.remaining_quantity + qty
