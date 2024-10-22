@@ -154,6 +154,28 @@ class JournalEntry(AccountsController):
         if not self.title:
             self.title = self.get_title()
 
+        for account in self.accounts:
+            self.validate_verfiying_the_exsistence_of_budget(account = account,company = self.company)
+
+    def validate_verfiying_the_exsistence_of_budget(self,account,company):
+        result = frappe.db.sql(
+            """
+            SELECT
+            name
+            FROM 
+            `tabProject Budget`
+            WHERE workflow_state = "Approved"
+            AND project = %s
+            AND department = %s
+            AND company = %s
+            """,
+            (account.project,account.department,company),as_dict = True)
+        
+        if result:
+            ...
+        else:
+            frappe.throw(f"For <b>Row number: {account.idx}</b> <br> Kindly create project budget for Project: <b>{account.project}</b> and for Department: <b>{account.department}</b>")
+    
     def updating_the_budget(self):
         for account in self.accounts:
             if account.custom_update_project_budget_:

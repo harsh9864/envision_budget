@@ -190,7 +190,7 @@ class PurchaseOrder(BuyingController):
 
     def validate(self):
         super().validate()
-
+        self.verifying_exsistence_of_budget(project = self.project, department = self.department, company = self.company)
         self.set_status()
         # apply tax withholding only if checked and applicable
         self.set_tax_withholding()
@@ -218,6 +218,58 @@ class PurchaseOrder(BuyingController):
             self.doctype, self.supplier, self.company, self.inter_company_order_reference
         )
         self.reset_default_field_value("set_warehouse", "items", "warehouse")
+
+    def verifying_exsistence_of_budget(self,project,department,company):
+        
+        result = frappe.db.sql(
+            """
+            
+            SELECT
+            name
+            FROM 
+            `tabProject Budget`
+            WHERE workflow_state = "Approved"
+            AND project = %s
+            AND department = %s
+            AND company = %s
+            """
+            ,
+            (project,department,company),as_dict = True)
+        if result:
+            for data in result:
+                self.validating_items(project_budget = data.name)
+        else:
+            frappe.throw(f"Kindly create project budget for Project: <b>{project}</b> and for Department: <b>{department}</b>")
+        
+    def validating_items(self, project_budget):
+        # Fetch items from the Project Budget (which can be individual items or item groups)
+        items_data = frappe.db.sql(
+            """
+            SELECT 
+                item
+            FROM
+                `tabBudget Items`
+            WHERE parent = %s
+            """,
+            (project_budget),
+            as_dict=True
+        )
+        # Create a set of budget items (which can contain individual items or item groups)
+        budget_items = {d['item'] for d in items_data}
+        # Loop through items in the Purchase Order
+        for item in self.items:
+            # Check if the item in the PO is directly listed as a budget item or item group
+            if item.item_code in budget_items:
+                print(f"Item {item.item_code} is valid as it's directly in the budget.")
+            else:
+                # Check if the item belongs to any of the item groups in the budget
+                item_group = frappe.db.get_value("Item", item.item_code, "item_group")
+                if item_group in budget_items:
+                    ...
+                else:
+                    # Throw an error if neither the item nor its item group is in the budget
+                    frappe.throw(f"For Row Number: <b>{item.idx}</b> <br>Item: <b>{item.item_code}</b> is not in the Project Budget nor does it belong to any Budget Item Group.")
+
 
     def validate_with_previous_doc(self):
         mri_compare_fields = [["project", "="], ["item_code", "="]]
