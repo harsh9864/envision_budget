@@ -101,7 +101,7 @@ before_save: function (frm) {
         // Set the total field in the child row
         frappe.model.set_value(data.doctype, data.name, 'timeline_total', timeline_data_total);
     });
-    frm.refresh_field('timeline_details');
+    frm.refresh_field('budgeted_items');
 
     let budgeted_items_data = frm.doc.budgeted_items;
     let stable_items_count = fluctuating_items_count = stable_items_budgeted_amount = fluctuating_items_budgeted_amount = total_count = total_budgeted_amount = 0;
@@ -127,6 +127,40 @@ before_save: function (frm) {
     frm.set_value("total_count",total_count);
     frm.set_value("total_budgeted_amount",total_budgeted_amount);
 
+// Reset frappe.validated before processing
+frappe.validated = true;
+
+frm.doc.budgeted_items.forEach(data => {
+    if (data.apply_budget_on == "Item") {
+        frappe.call({
+            method: "envision_finance.envision_finance.doctype.project_budget.project_budget.verifying_the_budgeted_items",
+            args: {
+                project: frm.doc.project,
+                department: frm.doc.department,
+                item: data.item,
+                applicable_on_purchase_order: frm.doc.applicable_on_purchase_order,
+                applicable_on_purchase_invoice: frm.doc.applicable_on_purchase_invoice,
+                applicable_on_journal_entry: frm.doc.applicable_on_journal_entry,
+                fiscal_year: frm.doc.fiscal_year
+            },
+            async: false, // Ensure synchronous behavior
+            callback: function(response) {
+                // Check if response has data
+                if (response && response.message && response.message.length > 0) {
+                    // Item exists in another budget
+                    frappe.msgprint({
+                        title: __('Item Already exists in another Budget'),
+                        message: `For Row Number:<b> ${data.idx}</b><br><b>${data.item}</b> already exists in Budget: <b>${response.message[0].name}</b>`,
+                        indicator: 'red'
+                    });
+                    
+                    // Stop further validation and prevent submission
+                    frappe.validated = false;
+                }
+            }
+        });
+    }
+});
 },
 
 });
@@ -181,29 +215,8 @@ frappe.ui.form.on("Budget Items",{
 
     item: function(frm, cdt, cdn) {
         var row = locals[cdt][cdn];
-        console.log(row.apply_budget_on)
         if (frm.doc.project != null && frm.doc.department != null && row.item != null && frm.doc.fiscal_year != null) {
-            if (row.apply_budget_on == "Item") {
-                frappe.call({
-                    method: "envision_finance.envision_finance.doctype.project_budget.project_budget.verifying_the_budgeted_items",
-                    args: {
-                        project: frm.doc.project,
-                        department: frm.doc.department,
-                        item: row.item,
-                        applicable_on_purchase_order: frm.doc.applicable_on_purchase_order,
-                        applicable_on_purchase_invoice: frm.doc.applicable_on_purchase_invoice,
-                        fiscal_year: frm.doc.fiscal_year
-                    },
-                    callback: function(response) {
-                        if (response.data == null) {
-                            var a = 1
-                        }
-                        else{
-                            frappe.throw(`<b>Item Already exists in another Budget</b><br><br><b>${row.item}</b> already exists in Budget: <b>${response.data[0].name}</b>`);
-                        }
-                    }
-                });
-            }
+        var a = 1
         } 
         else if (frm.doc.project == undefined || frm.doc.project == null) {
             cur_frm.clear_table("budgeted_items");
