@@ -273,7 +273,7 @@ class PurchaseInvoice(BuyingController):
 
         # validate service stop date to lie in between start and end date
         validate_service_stop_date(self)
-
+        self.verifying_exsistence_of_budget(project = self.project, department = self.department, company = self.company)
         self.validate_release_date()
         self.check_conversion_rate()
         self.validate_credit_to_acc()
@@ -298,6 +298,27 @@ class PurchaseInvoice(BuyingController):
         self.reset_default_field_value("set_from_warehouse", "items", "from_warehouse")
         self.set_percentage_received()
 
+    def verifying_exsistence_of_budget(self,project,department,company):
+        
+        result = frappe.db.sql(
+            """
+            
+            SELECT
+            name
+            FROM 
+            `tabProject Budget`
+            WHERE workflow_state = "Approved"
+            AND project = %s
+            AND department = %s
+            AND company = %s
+            """
+            ,
+            (project,department,company),as_dict = True)
+        if result:
+            ...
+        else:
+            frappe.throw(f"Kindly create project budget for Project: <b>{project}</b> and for Department: <b>{department}</b>")
+            
     def validate_item_wise_budget(self):
         company = self.company
         project = self.project

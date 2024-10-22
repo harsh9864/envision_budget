@@ -6,15 +6,13 @@ refresh(frm) {
             window.location.reload();
         }, 
     );
-    if (frm.doc.docstatus == 0) {
+    if (frm.doc.docstatus != 1) {
         // Add upload button for both grids
         addUploadButton(frm, "budgeted_items");
-        addUploadButton(frm, "timeline_details");
 
         // Load SheetJS and add the download buttons for both grids
         loadSheetJS(function() {
             addDownloadButton(frm, "budgeted_items");
-            addDownloadButton(frm, "timeline_details");
         });
     }
     if (frm.doc.workflow_state == "Adjusted"){
@@ -51,6 +49,16 @@ onload: function(frm){
             }
         };
     });
+    frm.fields_dict["budgeted_items"].grid.get_field("item").get_query = function(doc, cdt, cdn) {
+        var child = locals[cdt][cdn];
+        if(child.apply_budget_on == "Item"){
+            return {    
+                filters:[
+                    ['Item', 'is_purchase_item', '=', 1]
+                ]
+            };
+        }
+    };
     frm.set_value("fiscal_year", erpnext.utils.get_fiscal_year(frappe.datetime.get_today()))
 },
 
@@ -79,7 +87,7 @@ before_save: function (frm) {
         frm.set_value("is_used",1)
     }
 
-    let timeline_data = frm.doc.timeline_details;
+    let timeline_data = frm.doc.budgeted_items;
     let timeline_data_total = 0
 
     timeline_data.forEach(data => {
@@ -91,7 +99,7 @@ before_save: function (frm) {
             (data.october || 0) + (data.november || 0) + (data.december || 0);
     
         // Set the total field in the child row
-        frappe.model.set_value(data.doctype, data.name, 'total', timeline_data_total);
+        frappe.model.set_value(data.doctype, data.name, 'timeline_total', timeline_data_total);
     });
     frm.refresh_field('timeline_details');
 
@@ -241,11 +249,7 @@ function downloadXLSXTemplate(gridField) {
     // Define headers based on the grid field
     if (gridField === "budgeted_items") {
         headers = [
-            ['Apply Budget on', 'Item', 'HSN/SAC Code', 'Item Group', 'UOM', 'Quantity', 'Unit Price', 'Amount', 'Current Budget', 'Remaining Quantity']
-        ];
-    } else if (gridField === "timeline_details") {
-        headers = [
-            ['Apply Budget on', 'Item', 'Item Group', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December','Total Amount']
+            ['Apply Budget on', 'Item', 'HSN/SAC Code', 'Item Group', 'UOM', 'Quantity', 'Unit Price', 'Amount', 'Remaining Budget', 'Remaining Quantity','January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
         ];
     }
 
@@ -257,7 +261,7 @@ function downloadXLSXTemplate(gridField) {
     XLSX.utils.book_append_sheet(wb, ws, "Template");
 
     // Download the XLSX file with dynamic file name based on gridField
-    var fileName = (gridField === "budgeted_items") ? "budgeted_items_template.xlsx" : "budgeted_timeline_template.xlsx";
+    var fileName = "budgeted_items_template.xlsx";
     XLSX.writeFile(wb, fileName);
 }
 
@@ -317,12 +321,7 @@ function processXLSXData(jsonData, gridField) {
             item['remaining_quantity'] = row['Remaining Quantity'] || 0;
             item['unit_price'] = row['Unit Price'] || 0;
             item['amount'] = row['Amount'] || 0;
-            item['current_budget'] = row['Current Budget'] || 0;
-        } else if (gridField === 'timeline_details') {
-            // Map fields for timeline_details
-            item['apply_budget_on'] = row['Apply Budget on'] || '';
-            item['item'] = row['Item'] || '';
-            item['item_group'] = row['Item Group'] || '';
+            item['current_budget'] = row['Remaining Budget'] || 0;
             item['january'] = row['January'] || 0;
             item['february'] = row['February'] || 0;
             item['march'] = row['March'] || 0;
@@ -335,7 +334,6 @@ function processXLSXData(jsonData, gridField) {
             item['october'] = row['October'] || 0;
             item['november'] = row['November'] || 0;
             item['december'] = row['December'] || 0;
-            item['total'] = row['Total Amount'] || 0;
         }
 
         items.push(item);
