@@ -190,7 +190,7 @@ class PurchaseOrder(BuyingController):
 
     def validate(self):
         super().validate()
-
+        self.verifying_exsistence_of_budget(project = self.project, department = self.department, company = self.company)
         self.set_status()
         # apply tax withholding only if checked and applicable
         self.set_tax_withholding()
@@ -219,6 +219,27 @@ class PurchaseOrder(BuyingController):
         )
         self.reset_default_field_value("set_warehouse", "items", "warehouse")
 
+    def verifying_exsistence_of_budget(self,project,department,company):
+        
+        result = frappe.db.sql(
+            """
+            
+            SELECT
+            name
+            FROM 
+            `tabProject Budget`
+            WHERE workflow_state = "Approved"
+            AND project = %s
+            AND department = %s
+            AND company = %s
+            """
+            ,
+            (project,department,company),as_dict = True)
+        if result:
+            ...
+        else:
+            frappe.throw(f"Kindly create project budget for Project: <b>{project}</b> and for Department: <b>{department}</b>")
+        
     def validate_with_previous_doc(self):
         mri_compare_fields = [["project", "="], ["item_code", "="]]
         if self.is_subcontracted:

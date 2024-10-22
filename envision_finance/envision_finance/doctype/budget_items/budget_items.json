@@ -19,7 +19,24 @@
   "amount",
   "column_break_duoz",
   "remaining_quantity",
-  "current_budget"
+  "current_budget",
+  "budget_timeline_section",
+  "january",
+  "april",
+  "july",
+  "october",
+  "column_break_btuy",
+  "february",
+  "may",
+  "august",
+  "november",
+  "column_break_ygkp",
+  "march",
+  "june",
+  "september",
+  "december",
+  "budgeted_timeline_total_section",
+  "timeline_total"
  ],
  "fields": [
   {
@@ -115,12 +132,134 @@
    "in_list_view": 1,
    "label": "Apply Budget on",
    "options": "Item\nItem Group"
+  },
+  {
+   "fieldname": "budget_timeline_section",
+   "fieldtype": "Section Break",
+   "label": "Budget Timeline"
+  },
+  {
+   "default": "0.00",
+   "fieldname": "january",
+   "fieldtype": "Currency",
+   "label": "January",
+   "non_negative": 1,
+   "precision": "2"
+  },
+  {
+   "default": "0.00",
+   "fieldname": "april",
+   "fieldtype": "Currency",
+   "label": "April",
+   "non_negative": 1,
+   "precision": "2"
+  },
+  {
+   "fieldname": "column_break_btuy",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0.00",
+   "fieldname": "february",
+   "fieldtype": "Currency",
+   "label": "February",
+   "non_negative": 1,
+   "precision": "2"
+  },
+  {
+   "fieldname": "column_break_ygkp",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0.00",
+   "fieldname": "march",
+   "fieldtype": "Currency",
+   "label": "March",
+   "non_negative": 1,
+   "precision": "2"
+  },
+  {
+   "default": "0.00",
+   "fieldname": "july",
+   "fieldtype": "Currency",
+   "label": "July",
+   "non_negative": 1,
+   "precision": "2"
+  },
+  {
+   "default": "0.00",
+   "fieldname": "october",
+   "fieldtype": "Currency",
+   "label": "October",
+   "non_negative": 1,
+   "precision": "2"
+  },
+  {
+   "default": "0.00",
+   "fieldname": "may",
+   "fieldtype": "Currency",
+   "label": "May",
+   "non_negative": 1,
+   "precision": "2"
+  },
+  {
+   "default": "0.00",
+   "fieldname": "august",
+   "fieldtype": "Currency",
+   "label": "August",
+   "non_negative": 1,
+   "precision": "2"
+  },
+  {
+   "default": "0.00",
+   "fieldname": "november",
+   "fieldtype": "Currency",
+   "label": "November",
+   "non_negative": 1,
+   "precision": "2"
+  },
+  {
+   "default": "0.00",
+   "fieldname": "june",
+   "fieldtype": "Currency",
+   "label": "June",
+   "non_negative": 1,
+   "precision": "2"
+  },
+  {
+   "default": "0.00",
+   "fieldname": "september",
+   "fieldtype": "Currency",
+   "label": "September",
+   "non_negative": 1,
+   "precision": "2"
+  },
+  {
+   "default": "0.00",
+   "fieldname": "december",
+   "fieldtype": "Currency",
+   "label": "December",
+   "non_negative": 1,
+   "precision": "2"
+  },
+  {
+   "fieldname": "budgeted_timeline_total_section",
+   "fieldtype": "Section Break",
+   "label": "Budgeted Timeline Total"
+  },
+  {
+   "default": "0.00",
+   "fieldname": "timeline_total",
+   "fieldtype": "Currency",
+   "label": "Timeline Total",
+   "non_negative": 1,
+   "precision": "2"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-10-01 11:37:53.729356",
+ "modified": "2024-10-22 12:42:42.238787",
  "modified_by": "Administrator",
  "module": "Envision Finance",
  "name": "Budget Items",

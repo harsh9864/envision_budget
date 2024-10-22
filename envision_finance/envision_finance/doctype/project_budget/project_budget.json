@@ -34,8 +34,6 @@
   "action_if_annual_budget_exceeded_on_journal_entry",
   "section_break_ytbv",
   "budgeted_items",
-  "budget_timeline_section",
-  "timeline_details",
   "budget_summary_section",
   "stable_items_count",
   "fluctuating_items_count",
@@ -92,11 +90,11 @@
   },
   {
    "allow_on_submit": 1,
-   "default": "0",
+   "default": "1",
    "fieldname": "disable",
    "fieldtype": "Check",
    "label": "Disable",
-   "permlevel": 1
+   "read_only": 1
   },
   {
    "fieldname": "control_action_section",
@@ -314,17 +312,6 @@
    "search_index": 1
   },
   {
-   "fieldname": "budget_timeline_section",
-   "fieldtype": "Section Break",
-   "label": "Budget Timeline "
-  },
-  {
-   "fieldname": "timeline_details",
-   "fieldtype": "Table",
-   "label": "Timeline Details",
-   "options": "Item wise Budgeted  Timeline"
-  },
-  {
    "fieldname": "column_break_qlxu",
    "fieldtype": "Column Break"
   },
@@ -333,14 +320,14 @@
    "default": "0",
    "fieldname": "will_be_adjusted",
    "fieldtype": "Check",
-   "label": "Will be Adjusted",
+   "label": "To be Amended",
    "permlevel": 1
   },
   {
    "default": "0",
    "fieldname": "is_adjustment",
    "fieldtype": "Check",
-   "label": "Is Adjustment"
+   "label": "Is Amended"
   },
   {
    "depends_on": "eval:doc.is_adjustment == 1",
@@ -352,7 +339,7 @@
    "depends_on": "eval:doc.is_adjustment == 1",
    "fieldname": "budget_that_will_be_adjusted",
    "fieldtype": "Link",
-   "label": "Budget that will be adjusted",
+   "label": "Budget that will be amended",
    "link_filters": "[[\"Project Budget\",\"will_be_adjusted\",\"=\",1]]",
    "mandatory_depends_on": "eval:doc.is_adjustment == 1",
    "options": "Project Budget"
@@ -367,13 +354,13 @@
    "fieldtype": "Select",
    "label": "Purpose",
    "mandatory_depends_on": "eval:doc.is_adjustment == 1",
-   "options": "\nBudget Extension\nBudget Internal Price Transfer"
+   "options": "\nExtension\nInternal Transfer"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-10-15 19:00:51.942527",
+ "modified": "2024-10-22 12:54:05.456372",
  "modified_by": "Administrator",
  "module": "Envision Finance",
  "name": "Project Budget",
