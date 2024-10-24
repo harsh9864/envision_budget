@@ -108,6 +108,9 @@ def setting_logs_in_new_budget():
             'sales_invoice_id': row.sales_invoice_id,
             'is_adjusted_budget':1,
             'project_budget':old_budget,
+            'net_total':row.net_total,
+            'grand_total':row.grand_total,
+            'taxes_and_charges_total':row.taxes_and_charges_total,
         })
     # Save new budget document after appending rows
     new_budget_data.save()

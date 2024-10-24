@@ -133,7 +133,7 @@ override_doctype_class = {
     "Purchase Order": "envision_finance.public.overrides.purchase_order.PurchaseOrder",
     "Purchase Invoice": "envision_finance.public.overrides.purchase_invoice.PurchaseInvoice",
     "Journal Entry": "envision_finance.public.overrides.journal_entry.JournalEntry",
-    "Payment Entry": "envision_finance.public.overrides.payment_entry.PaymentEntry",
+    "Sales Invoice": "envision_finance.public.overrides.sales_invoice.SalesInvoice",
 }
 
 # Document Events
@@ -247,8 +247,6 @@ override_doctype_dashboards = {
 
 fixtures = [
     "Custom DocPerm",
-    "Workflow State",
-    "Workflow Action",
     "Role",
     {"dt":"Workflow","filters":[
         [
