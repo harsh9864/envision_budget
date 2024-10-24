@@ -7,43 +7,21 @@
  "engine": "InnoDB",
  "field_order": [
   "details_section",
-  "entry_type",
   "is_adjusted_budget",
-  "column_break_ksti",
-  "entry_id",
-  "column_break_llgh",
-  "allocated_amount",
+  "column_break_vaah",
+  "project_budget",
   "sales_invoice_details_section",
   "sales_invoice_id",
   "grand_total",
   "column_break_mmjb",
   "net_total",
-  "taxes_and_charges_total",
-  "adjustment_details_section",
-  "project_budget"
+  "taxes_and_charges_total"
  ],
  "fields": [
   {
-   "fieldname": "entry_type",
-   "fieldtype": "Select",
-   "in_list_view": 1,
-   "label": "Entry Type",
-   "options": "Payment Entry"
-  },
-  {
    "fieldname": "details_section",
    "fieldtype": "Section Break",
-   "label": "Details"
-  },
-  {
-   "fieldname": "column_break_ksti",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "entry_id",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Entry ID"
+   "label": "Adjustment Details"
   },
   {
    "fieldname": "sales_invoice_details_section",
@@ -52,21 +30,19 @@
   },
   {
    "fieldname": "sales_invoice_id",
-   "fieldtype": "Link",
+   "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Sales Invoice ID",
    "link_filters": "[[\"Sales Invoice\",\"docstatus\",\"=\",\"1\"]]",
    "options": "Sales Invoice"
   },
   {
-   "fetch_from": "sales_invoice_id.total_taxes_and_charges",
    "fieldname": "taxes_and_charges_total",
    "fieldtype": "Currency",
    "label": "Taxes and Charges Total",
    "precision": "2"
   },
   {
-   "fetch_from": "sales_invoice_id.grand_total",
    "fieldname": "grand_total",
    "fieldtype": "Currency",
    "in_list_view": 1,
@@ -78,21 +54,9 @@
    "fieldtype": "Column Break"
   },
   {
-   "fetch_from": "sales_invoice_id.net_total",
    "fieldname": "net_total",
    "fieldtype": "Currency",
    "label": "Net Total",
-   "precision": "2"
-  },
-  {
-   "fieldname": "column_break_llgh",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "allocated_amount",
-   "fieldtype": "Currency",
-   "in_list_view": 1,
-   "label": "Allocated Amount",
    "precision": "2"
   },
   {
@@ -102,24 +66,22 @@
    "label": "Is Adjusted Budget"
   },
   {
-   "depends_on": "eval: doc.is_adjusted_budget",
-   "fieldname": "adjustment_details_section",
-   "fieldtype": "Section Break",
-   "label": "Adjustment Details"
-  },
-  {
    "depends_on": "eval:doc.is_adjusted_budget",
    "fieldname": "project_budget",
    "fieldtype": "Link",
    "label": "Project Budget",
    "mandatory_depends_on": "eval:doc.is_adjusted_budget",
    "options": "Project Budget"
+  },
+  {
+   "fieldname": "column_break_vaah",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-10-16 11:16:00.579096",
+ "modified": "2024-10-24 13:14:35.683235",
  "modified_by": "Administrator",
  "module": "Envision Finance",
  "name": "Revenue wise Budget Logs",
